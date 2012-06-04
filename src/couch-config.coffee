@@ -26,8 +26,9 @@ designDocs =
   harvests: [ require('./design/input') ]
 
 # Search URLs
-searchUrl = "/records/_fti/_design/search/"
-searchUrl = "/_fti/local/records/_design/search/" if config.dbVersion >= 1.1  
+searchUrl = "http://#{ config.dbHost }:#{ config.dbPort }/records/_fti/_design/search/"
+# It turns out even versions >= 1.1 can work the old way. It depends on configuration in couchdb's local.ini
+#searchUrl = "http://#{ config.dbHost }:#{ config.dbPort }/_fti/local/records/_design/search/" if config.dbVersion >= 1.1  
 
 # Setup routines
 createDb = (dbName) ->

@@ -1,7 +1,7 @@
 module.exports =
   _id: '_design/search'
   language: 'javascript'
-  views: {},
+  views: {}
   fulltext:
     full: require './views/search-full'
     

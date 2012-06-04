@@ -15,6 +15,11 @@ notReadyYet = (req, res, next) ->
 # setParams sets request parameters so they are easy to access by other middleware
 setParams = (req, res, next) ->
   switch req.routeId
+    when 'search'
+      req.searchTerms = req.body.searchTerms
+      req.limit = req.body.limit if req.body.limit
+      req.skip = req.body.skip if req.body.skip
+      req.publishedOnly = req.body.publishedOnly or false
     when 'listResources', 'newResource'
       req.resourceType = req.params[0]
     when 'viewRecords'
@@ -46,7 +51,7 @@ setParams = (req, res, next) ->
 server.post /^\/search\/$/, ((req, res, next) -> 
   req.routeId = 'search'
   next()), setParams,
-  notReadyYet
+  routes.search
 
 # List records or collections (as JSON)     
 server.get /^\/(record|collection)\/$/, ((req, res, next) -> 

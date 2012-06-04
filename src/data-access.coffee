@@ -1,10 +1,11 @@
 _ = require 'underscore'
 schemas = require './schemas'
+request = require 'request'
 
 # Simple function to clean up a document coming out of CouchDB
 cleanDoc = (doc) ->
   cleaned = _.extend {}, doc
-  #cleaned.id = doc._id
+  cleaned.id = doc._id
   delete cleaned._id
   delete cleaned._rev
   delete cleaned._attachments
@@ -82,7 +83,7 @@ module.exports =
         options.error err
       else
         if options.clean_docs
-          options.success (cleanDoc row.doc for row in response.rows when not row._id.match(/^_/)?)
+          options.success (cleanDoc row.doc for row in response.rows when not row.id.match(/^_/)?)
         else
           options.success response        
    
@@ -138,4 +139,34 @@ module.exports =
     schema = schemas.byName('metadata') if resourceType is 'record'
     schema = schemas.byName('collection') if resourceType is 'collection'
     return schemas.validate data, schema
-           
+    
+  # Perform a search
+  search: (searchUrl, options) ->
+    options.index ?= 'full'
+    options.search_terms ?= ''
+    options.include_docs ?= true
+    options.sort ?= true
+    options.limit ?= 999999
+    options.published_only ?= false
+    options.error ?= ->
+    options.success ?= ->
+    
+    params = "?include_docs=#{ options.include_docs }&limit=#{ options.limit }"    
+    params += "&skip=#{ options.skip }" if options.skip?
+    params += "&sort=title" if options.sort
+    params += "&q=#{ options.search_terms }"
+    params += "%20AND%20published:true" if options.published_only
+    
+    url = "#{ searchUrl }#{ options.index }#{ params }"
+    opts =
+      uri: url
+    request opts, (err, response, body) ->
+      if err?
+        options.error err
+      else
+        options.success body
+      
+      
+      
+      
+             

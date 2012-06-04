@@ -11,6 +11,21 @@ xml2json = require 'xml2json'
 module.exports =
 
 
+  # Text-based search for records
+  search: (req, res, next) ->
+    opts =
+      search_terms: req.searchTerms
+      limit: req.limit
+      skip: req.skip
+      published_only: req.publishedOnly or false
+      error: (err) ->
+        next new errors.DatabaseReadError 'Error searching for documents'
+      success: (result) ->
+        console.log 'SEARCH FOR ' + req.searchTerms
+        res.send result
+    da.search couch.searchUrl, opts
+      
+            
   # List records or collections (as JSON)
   listResources: (req, res, next) ->
     db = couch.getDb req.resourceType

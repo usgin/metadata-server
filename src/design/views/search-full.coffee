@@ -13,6 +13,7 @@ module.exports =
           when 'object' then idx value
           when 'function' then break
           else result.add value
+      return
     idx doc
     
     # Add a published field
@@ -38,3 +39,5 @@ module.exports =
       index: 'not_analyzed' # This allows to sort by title effectively
     if doc.Title?
       result.add doc.Title, fldOptions
+    
+    return result
