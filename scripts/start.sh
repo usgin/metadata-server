@@ -4,6 +4,6 @@ if [ ! -d "logs" ]; then
 fi
 lucene=`ps aux | grep [c]om.github.rnewson.couchdb.lucene.Main | awk '{print $2}'`
 if [ -z $lucene ]; then
-	./couchdb-lucene-0.8.0/bin/run &> logs/lucene.log & 
+	./couchdb-lucene/target/couchdb-lucene-0.8.0/bin/run &> logs/lucene.log & 
 fi
 node ./build/server.js &> logs/server.log & 
