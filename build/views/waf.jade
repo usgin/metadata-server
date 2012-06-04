@@ -1,0 +1,12 @@
+!!! 5
+html(lang="en")
+	head
+		title= title
+	body
+		h1= title + " -- All ISO Documents"
+		ul
+			- for (var i = 0; i < records.length; i++) {
+			li
+				a(href="/record/" + records[i] + ".iso.xml")= records[i] + ".xml"
+			- }
+	
