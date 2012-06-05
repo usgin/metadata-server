@@ -22,6 +22,7 @@ module.exports =
         next new errors.DatabaseReadError 'Error searching for documents'
       success: (result) ->
         console.log 'SEARCH FOR ' + req.searchTerms
+        res.header('Content-Type', 'application/json')
         res.send result
     da.search couch.searchUrl, opts
       
@@ -81,7 +82,7 @@ module.exports =
         data: _.extend(req.body, { ModifiedDate: utils.getCurrentDate() })
         error: (err) ->
           next new errors.DatabaseWriteError 'Error writing to the database'
-        success: (result) ->
+        success: (newRecord) ->
           console.log 'NEW ' + req.resourceType + ' CREATED'
           res.send '', { Location: "/#{ req.resourceType }/#{ newRecord.id }/" }, 201
       da.createDoc db, opts      
@@ -123,7 +124,7 @@ module.exports =
                       HarvestRecordId: newHarvestDoc.id
                     transformedDoc = transformedDoc[0]
                     _.extend transformedDoc.HarvestInformation, harvestInfo 
-                    _.extend transformedDoc, { Collections: req.collections } if req.collections?
+                    _.extend transformedDoc, { Collections: req.collections || [] }
                     opts = # The fourth request places the transformed doc into the record database
                       data: transformedDoc
                       error: (err) ->
@@ -164,14 +165,17 @@ module.exports =
       error: (err) ->
         next new errors.DatabaseReadError 'Error running database view'
       success: (result) ->
-        console.log 'VIEW RECORD ' + req.resourceId + ' AS ' + req.format
-        result = result[0]
-        if req.format.match(/\.xml$/)? # Handle the special case where JSON needs to be converted to XML
-          if req.format.match(/atom\.xml/)? # Handle the special case of atom and the feed wrapper it needs
-            result = utils.atomWrapper [result]
-          result = xml2json.toXml result
-          res.header('Content-Type', 'text/xml')
-        res.send result
+        if result.length is 0
+          next new errors.NotFoundError 'Requested document: ' + req.resourceId + ' was not found'
+        else
+          console.log 'VIEW RECORD ' + req.resourceId + ' AS ' + req.format
+          result = result[0]
+          if req.format.match(/\.xml$/)? # Handle the special case where JSON needs to be converted to XML
+            if req.format.match(/atom\.xml/)? # Handle the special case of atom and the feed wrapper it needs
+              result = utils.atomWrapper [result]
+            result = xml2json.toXml result
+            res.header('Content-Type', 'text/xml')
+          res.send result
     da.viewDocs db, opts
     
 
@@ -280,7 +284,7 @@ module.exports =
               next new errors.DatabaseWriteError 'Error writing document to the database'
             success: (result) ->
               console.log 'UPDATE ' + req.resourceType + ': ' + req.resourceId
-              res.send '', { Location: "/#{ req.resourceType }/#{ newRecord.id }/" }, 204
+              res.send '', { Location: "/#{ req.resourceType }/#{ result.id }/" }, 204
           da.createDoc db, opts
       da.getDoc db, opts
       

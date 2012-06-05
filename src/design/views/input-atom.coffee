@@ -91,10 +91,10 @@ module.exports =
     extent = objGet atom, 'georss:box.$t', null    
     extent = extent.split(' ') if extent?
     extent = [ -179, -89, 179, 89 ] if not extent?
-    doc.setProperty 'GeographicExtent.WestBound', extent[0] || -179
-    doc.setProperty 'GeographicExtent.SouthBound', extent[1] || -89
-    doc.setProperty 'GeographicExtent.EastBound', extent[2] || 179
-    doc.setProperty 'GeographicExtent.NorthBound', extent[3] || 89 
+    doc.setProperty 'GeographicExtent.WestBound', parseFloat extent[0] || -179
+    doc.setProperty 'GeographicExtent.SouthBound', parseFloat extent[1] || -89
+    doc.setProperty 'GeographicExtent.EastBound', parseFloat extent[2] || 179
+    doc.setProperty 'GeographicExtent.NorthBound', parseFloat extent[3] || 89 
     
     # Use first author as distributor
     doc.setProperty 'Distributors', [ docAuthors[0] ]
@@ -121,6 +121,9 @@ module.exports =
       serviceType = type for type in capServiceTypes when type.search(adjSemantics) isnt -1
     docLinks = (buildLink atomLink, serviceType for atomLink in atomLinks)
     doc.Links = docLinks
+    
+    # Published
+    doc.setProperty "Published", false
     
     # Finished!
     emit atom._id, doc

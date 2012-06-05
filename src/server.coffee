@@ -90,7 +90,7 @@ server.get /^\/record\/([^\/]*)\.(iso.xml|atom\.xml|geojson)$/, ((req, res, next
   routes.viewRecord
 
 # Retrieve all the records in a specific collection (as JSON)
-server.get /^\/collection\/([^\/]*)\/records\//, ((req, res, next) -> 
+server.get /^\/collection\/([^\/]*)\/records\/$/, ((req, res, next) -> 
   req.routeId = 'getCollectionRecords'
   next()), setParams,
   routes.getCollectionRecords

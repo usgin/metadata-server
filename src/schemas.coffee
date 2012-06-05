@@ -46,7 +46,7 @@ schemas =
         type: 'string'
         required: true
       Zip:
-        type: 'number'
+        type: 'string'
         required: true
   
   contactInformation:

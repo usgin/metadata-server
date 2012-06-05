@@ -128,10 +128,10 @@ module.exports =
       validExtents = (ext for ext in extent when (objGet ext, 'gmd:EX_Extent.gmd:geographicElement', null)?)
       extent = validExtents[0]
           
-    doc.setProperty "GeographicExtent.NorthBound", objGet extent, "gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:northBoundLatitude.gco:Decimal.$t", 89
-    doc.setProperty "GeographicExtent.SouthBound", objGet extent, "gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:southBoundLatitude.gco:Decimal.$t", -89
-    doc.setProperty "GeographicExtent.EastBound", objGet extent, "gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:eastBoundLongitude.gco:Decimal.$t", 179
-    doc.setProperty "GeographicExtent.WestBound", objGet extent, "gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:westBoundLongitude.gco:Decimal.$t", -179
+    doc.setProperty "GeographicExtent.NorthBound", parseFloat objGet extent, "gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:northBoundLatitude.gco:Decimal.$t", 89
+    doc.setProperty "GeographicExtent.SouthBound", parseFloat objGet extent, "gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:southBoundLatitude.gco:Decimal.$t", -89
+    doc.setProperty "GeographicExtent.EastBound", parseFloat objGet extent, "gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:eastBoundLongitude.gco:Decimal.$t", 179
+    doc.setProperty "GeographicExtent.WestBound", parseFloat objGet extent, "gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:westBoundLongitude.gco:Decimal.$t", -179
 
     # Distributors
     isoDistributors = objGet iso, "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:distributor", []
@@ -166,6 +166,9 @@ module.exports =
     
     # Harvest Information
     doc.setProperty "HarvestInformation.OriginalFileIdentifier", objGet iso, "gmd:MD_Metadata.gmd:fileIdentifier.gco:CharacterString.$t"
+    
+    # Published
+    doc.setProperty "Published", false
     
     # Finished!
     emit iso._id, doc

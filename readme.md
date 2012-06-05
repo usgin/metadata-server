@@ -59,10 +59,10 @@ Perform a full-text search through available metadata records
 The POST data should be a JSON object similar to the following:
 
 	{
-		"searchTerms": "alabama, bedrock",
-		"limit": 25 			// <-- optional number of records to return
-		"skip": 0 				// <-- optional number of records to skip
-		"publishedOnly": false 	// <-- optional, default is false
+		"searchTerms": "alabama%20bedrock", // <-- Note: search terms must be separated by spaces and URL encoded
+		"limit": 25 						// <-- optional number of records to return
+		"skip": 0 							// <-- optional number of records to skip
+		"publishedOnly": false 				// <-- optional, default is false
 	}
 ### Possible Responses
 - 200: A successful response will return a JSON object containing information about the number of hits, and will contain each of the matching metadata records.
@@ -135,6 +135,7 @@ Retrieves a single metadata record, specified by its resourceId, in the specifie
 	- *iso.xml*: The response will be an XML document that conforms to the USGIN profile for ISO 19139.
 	- *atom.xml*: The response will be an XML document that represents an Atom feed containing a single entry.
 	- *geojson*: The response will be a JSON document containing a single GeoJSON *Feature*
+- 404: The requested resourceId does not exist in the database.
 - 500: There was an error reading and/or formatting the document.
 
 

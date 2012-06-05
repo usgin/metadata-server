@@ -78,7 +78,7 @@ module.exports = couch =
   searchUrl: searchUrl
   
   fileUrl: (id, filename) ->
-    return [ couchUrl, config.recordsDb, id, filename ].join('/')
+    return [ couchUrl, 'records', id, filename ].join('/')
       
   getDb: (resourceType) ->  
     switch resourceType
