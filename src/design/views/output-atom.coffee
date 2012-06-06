@@ -40,16 +40,16 @@ module.exports =
               count++
     
     # Entry
-    atom.setProperty "entry.title.$t", objGet doc, "Title", "No title given"
+    atom.setProperty "title.$t", objGet doc, "Title", "No title given"
     
     # Id
-    atom.setProperty "entry.id.$t", doc._id
+    atom.setProperty "id.$t", doc._id
     
     # Authors
-    atom.setProperty "entry.author", []
+    atom.setProperty "author", []
     theAuthors = objGet doc, 'Authors', []
     for author, a in theAuthors
-      thisPath = "entry.author.#{ a }"
+      thisPath = "author.#{ a }"
       atom.setProperty "#{ thisPath }.name.$t", objGet author, "Name", objGet author, "OrganizationName", ""
       atom.setProperty "#{ thisPath }.contactInformation.phone.$t", objGet author, "ContactInformation.Phone", ""
       atom.setProperty "#{ thisPath }.contactInformation.email.$t", objGet author, "ContactInformation.Email", ""
@@ -66,20 +66,20 @@ module.exports =
       atomLink.serviceType = link.ServiceType if link.ServiceType?
       atomLink.layerId = link.LayerId if link.LayerId?
       atomLinks.push atomLink
-    atom.setProperty "entry.link", atomLinks
+    atom.setProperty "link", atomLinks
     
     # Date
-    atom.setProperty "entry.updated.$t", doc.ModifiedDate or ""
+    atom.setProperty "updated.$t", doc.ModifiedDate or ""
     
     # Summary
-    atom.setProperty "entry.summary.$t", objGet doc, "Description", ""
+    atom.setProperty "summary.$t", objGet doc, "Description", ""
     
     # Bounding Box
     n = objGet doc, "GeographicExtent.NorthBound", 89
     s = objGet doc, "GeographicExtent.SouthBound", -89
     e = objGet doc, "GeographicExtent.EastBound", 179
     w = objGet doc, "GeographicExtent.WestBound", -179
-    atom.setProperty "entry.georss:box.$t", [w, s, e, n].join " " 
+    atom.setProperty "georss:box.$t", [w, s, e, n].join " " 
     
     # Finished!
     emit doc._id, atom        

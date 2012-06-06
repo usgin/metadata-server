@@ -19,7 +19,8 @@ module.exports = utils =
             $t: org.orgName
           email:
             $t: org.orgEmail
-        entries: entries
+        entries: 
+          entry: entries
         
   featureCollection: (entries) ->
     wrapper =
