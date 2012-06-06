@@ -176,7 +176,7 @@ The PUT data should be a JSON object representing a metadata collection or recor
 Deletes an existing metadata record or collection specified by its resourceId.
 
 ### Possible Responses:
-- 201: The request was successful.
+- 204: The request was successful.
 - 404: The requested resourceId does not exist in the database.
 - 500: There was an error reading and/or writing to the database.
 
