@@ -108,7 +108,7 @@ The POST data should be a JSON object similar to the following:
 	{
 		"recordUrl": "http://somewhere.com/path/to/metadata/record.xml",
 		"inputFormat": "iso.xml",
-		"destinationCollection": "identifier-for-some-collection" // <-- optional parameter
+		"destinationCollections": [ "identifier-for-some-collection" ] // <-- optional parameter
 	}
 
 ... where inputFormat is one of *iso.xml* or *atom.xml*

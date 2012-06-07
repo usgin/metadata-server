@@ -14,7 +14,7 @@ validRecord =
           "Street": "416 W. Congress St. Ste. 100"
           "City": "Tucson"
           "State": "AZ"
-          "Zip": 85701
+          "Zip": "85701"
     }
   ]
   "Keywords": [ "one", "two", "three" ]
@@ -34,7 +34,7 @@ validRecord =
           "Street": "416 W. Congress St. Ste. 100"
           "City": "Tucson"
           "State": "AZ"
-          "Zip": 85701
+          "Zip": "85701"
     }
   ]
   "Links": [ ]
