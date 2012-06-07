@@ -11,7 +11,7 @@ cleanDoc = (doc) ->
   delete cleaned._attachments
   return cleaned
 
-module.exports = 
+module.exports = da =
   # Create a new document in the given database
   createDoc: (db, options) ->
     options.data ?= {}
@@ -103,11 +103,9 @@ module.exports =
     db.view options.design, options.format, params, (err, response) ->
       if err?
         options.error err
-      else
-        if options.clean_docs
-          options.success (row.value for row in response.rows)
-        else
-          options.success response
+      else       
+        response = (row.value for row in response.rows) if options.clean_docs                              
+        options.success response
   
   # Delete a document
   deleteDoc: (db, options) ->
@@ -133,7 +131,33 @@ module.exports =
         options.error err
       else
         options.success response
-        
+  
+  # Get collection names
+  getCollectionNames: (options) ->
+    options.id ?= ''
+    options.success ?= ->
+    options.error ?= ->
+    if not options.recordsDb? or not options.collectionsDb?
+      options.error()
+    else  
+      opts =
+        id: options.id
+        clean_docs: true
+        error: (err) ->
+          options.error err
+        success: (doc) ->
+          opts =
+            keys: doc.Collections
+            include_docs: true
+            clean_docs: true
+            error: (err) ->
+              options.error err
+            success: (collections) ->
+              names = (col.Title for col in collections when col.Title?)
+              options.success names
+          da.listDocs options.collectionsDb, opts
+      da.getDoc options.recordsDb, opts
+      
   # Validate data
   validateRecord: (data, resourceType) ->
     schema = schemas.byName('metadata') if resourceType is 'record'

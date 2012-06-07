@@ -170,12 +170,24 @@ module.exports =
         else
           console.log 'VIEW RECORD ' + req.resourceId + ' AS ' + req.format
           result = result[0]
-          if req.format.match(/\.xml$/)? # Handle the special case where JSON needs to be converted to XML
+          if req.format.match(/iso\.xml/)? # Handle the special case of ISO record that needs extra collection keywords
+            opts =
+              id: req.resourceId
+              recordsDb: couch.getDb 'record'
+              collectionsDb: couch.getDb 'collection'
+              error: (err) ->
+                next new errors.DatabaseReadError 'Error reading from the database'
+              success: (names) ->
+                result = xml2json.toXml utils.addCollectionKeywords result, names
+                res.header 'Content-Type', 'text/xml'
+                res.send result
+            da.getCollectionNames opts                     
+          else
             if req.format.match(/atom\.xml/)? # Handle the special case of atom and the feed wrapper it needs
               result = utils.atomWrapper [result]
-            result = xml2json.toXml result
-            res.header('Content-Type', 'text/xml')
-          res.send result
+              result = xml2json.toXml result
+              res.header 'Content-Type', 'text/xml'
+            res.send result
     da.viewDocs db, opts
     
 
