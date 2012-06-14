@@ -86,8 +86,7 @@ module.exports =
           console.log 'NEW ' + req.resourceType + ' CREATED'
           res.send '', { Location: "/#{ req.resourceType }/#{ newRecord.id }/" }, 201
       da.createDoc db, opts      
-  
-  
+        
   # Harvest an existing record
   harvestRecord: (req, res, next) ->
     if not req.url? or not req.format?
@@ -102,39 +101,47 @@ module.exports =
           if not utils.validateHarvestFormat req.format, body
             next new errors.ValidationError 'The document at the given URL did not match the format specified.'
           else            
-            db = couch.getDb 'harvest'                     
-            opts = # The second request creates the record in the harvests database
-              data: xml2json.toJson(body, { object: true, reversible: true })
+            db = couch.getDb 'harvest'
+            data = xml2json.toJson(body, { object: true, reversible: true })
+            switch req.format
+              when 'atom.xml'
+                entry = data.feed.entry
+                if _.isArray entry then entries = entry
+                else if _.isObject entry then entries = [ entry ]
+                else entries = []
+              when 'iso.xml'
+                entries = [ data ]                                 
+            opts = # The second request creates the records in the harvests database
+              docs: entries
               error: (err) ->
                 next new errors.DatabaseWriteError 'Error writing to the database'
-              success: (newHarvestDoc) ->                 
-                opts = # The third request pulls the harvested record through the appropriate input view
+              success: (newHarvestDocs) ->                 
+                opts = # The third request pulls the harvested records through the appropriate input view
                   design: 'input'
                   format: req.format
-                  key: newHarvestDoc.id
-                  clean_docs: true
+                  keys: (doc.id for doc in newHarvestDocs)
                   error: (err) ->
                     next new errors.DatabaseReadError 'Error reading document from database'
-                  success: (transformedDoc) ->
+                  success: (transformedDocs) ->
                     db = couch.getDb 'record'
-                    harvestInfo =
-                      OriginalFormat: req.format
-                      HarvestURL: req.url
-                      HarvestDate: utils.getCurrentDate()
-                      HarvestRecordId: newHarvestDoc.id
-                    transformedDoc = transformedDoc[0]
-                    _.extend transformedDoc.HarvestInformation, harvestInfo 
-                    _.extend transformedDoc, { Collections: req.collections || [] }
-                    opts = # The fourth request places the transformed doc into the record database
-                      data: transformedDoc
+                    for doc in transformedDocs.rows
+                      harvestInfo =
+                        OriginalFormat: req.format
+                        HarvestURL: req.url
+                        HarvestDate: utils.getCurrentDate()
+                        HarvestRecordId: doc.id
+                      _.extend doc.value.HarvestInformation, harvestInfo 
+                      _.extend doc.value, { Collections: req.collections || [] }
+                    opts = # The fourth request places the transformed docs into the record database
+                      docs: (doc.value for doc in transformedDocs.rows)
                       error: (err) ->
                         next new errors.DatabaseWriteError 'Error writing to the database'
-                      success: (newRecord) ->
+                      success: (newRecords) ->
                         console.log 'NEW ' + req.resourceType + ' HARVESTED'
-                        res.send '', { Location: "/record/#{ newRecord.id }/" }, 201                        
-                    da.createDoc db, opts
+                        res.send ("/record/#{ rec.id }/" for rec in newRecords), 200                        
+                    da.createDocs db, opts
                 da.viewDocs db, opts
-            da.createDoc db, opts
+            da.createDocs db, opts
             
             
   # Retrieve a specific record or collection (as JSON)

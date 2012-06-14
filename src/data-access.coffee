@@ -27,6 +27,17 @@ module.exports = da =
     else
       db.insert options.data, results
   
+  # Create multiple documents in the given database
+  createDocs: (db, options) ->
+    options.docs ?= []
+    options.success ?= ->
+    options.error ?= ->
+    db.bulk { "docs": options.docs }, (err, response) ->
+      if err?
+        options.error err
+      else
+        options.success response
+    
   # Retrieve a document by its ID from the given database      
   getDoc: (db, options) ->
     options.clean_doc ?= false

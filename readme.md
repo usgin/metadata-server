@@ -113,7 +113,7 @@ The POST data should be a JSON object similar to the following:
 
 ... where inputFormat is one of *iso.xml* or *atom.xml*
 ### Possible Responses:
-- 201: The request was successful. The *Location* header contains the URL that can be used to access the new resource.
+- 200: The request was successful. The response contains an array of URLs at which the newly created metadata records can be located.
 - 400: Either POST data did not contain the requisite data, the URL given was invalid, or the content at the given URL did not conform to the specified inputFormat
 - 500: There was an error reading and/or writing to the database
 
