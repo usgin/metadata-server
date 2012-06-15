@@ -8,7 +8,7 @@ da = require './data-access'
 xml2json = require 'xml2json'
   
 ### THESE ARE ALL THE ROUTE MIDDLEWARE FUNCTIONS ###
-module.exports =
+module.exports = routes = 
 
 
   # Text-based search for records
@@ -349,18 +349,45 @@ module.exports =
   # Associate a new file with a specific record
   newFile: (req, res, next) ->
     db = couch.getDb 'record'
-    opts =
+    opts = # The first request gets the record's current revision
       id: req.resourceId
       error: (err) ->
         next new errors.NotFoundError 'Requested document: ' + req.resourceId + ' was not found' if err['status-code']? and err['status-code'] = 404
         next new errors.DatabaseReadError 'Error reading document from database'
       success: (rev) ->
+        # The second request attaches the file to the record.
         file = (file for key, file of req.files)[0]
         fileStream = fs.createReadStream file.path
         fileStream.pipe db.attachment.insert req.resourceId, file.name, null, file.type, { rev: rev }
-        
-        console.log 'NEW FILE: ' + file.name + ' ATTACHED TO: ' + req.resourceId
-        res.send '', { Location: "/record/#{ req.resourceId }/file/#{ file.name }" }, 202
+        fileStream.on 'end', ->
+          opts = # The third getDoc request retrieves the existing document
+            id: req.resourceId
+            error: (err) ->
+              if err['status-code']? and err['status-code'] is 404
+                next new errors.NotFoundError 'Requested document: ' + req.resourceId + ' was not found' 
+              else
+                next new errors.DatabaseReadError 'Error reading document from database'
+            success: (result) ->
+              # Add a link for the new file
+              link =
+                Name: file.name
+                URL: "/record/#{ req.resourceId }/file/#{ file.name }"
+                isLocal: true
+                # Distributor: ???
+              result.Links = [] if not result.Links?
+              result.Links.push link
+              
+              opts = # The fourth createDoc request updates the document
+                id: req.resourceId
+                data: _.extend(result, { ModifiedDate: utils.getCurrentDate() })
+                clean_docs: true
+                error: (err) ->
+                  next new errors.DatabaseWriteError 'Error writing document to the database'
+                success: (result) ->
+                  console.log 'NEW FILE: ' + file.name + ' ATTACHED TO: ' + req.resourceId
+                  res.send '', { Location: "/record/#{ req.resourceId }/file/#{ file.name }" }, 202 
+              da.createDoc db, opts
+          da.getDoc db, opts
     da.getRev db, opts
     
     
@@ -401,8 +428,26 @@ module.exports =
             error: (err) ->
               next new errors.DatabaseWriteError 'Error writing document to the database'
             success: (result) ->
-              console.log 'DELETE FILE: ' + req.fileName + ' FROM RECORD: ' + req.resourceId
-              res.send()
+              opts = # The third request gets the record as it is now, without the file attached           
+                id: req.resourceId
+                error: (err) ->
+                  if err['status-code']? and err['status-code'] is 404
+                    next new errors.NotFoundError 'Requested document: ' + req.resourceId + ' was not found' 
+                  else
+                    next new errors.DatabaseReadError 'Error reading document from database'
+                success: (doc) ->
+                  doc.Links = ( link for link in doc.Links when link.URL isnt "/record/#{ req.resourceId }/file/#{ req.fileName }" )
+                  opts = # The fourth request updates the record, removing any Link elements
+                    id: req.resourceId
+                    data: _.extend(doc, { _rev: result.rev, ModifiedDate: utils.getCurrentDate() })
+                    clean_docs: true
+                    error: (err) ->
+                      next new errors.DatabaseWriteError 'Error writing document to the database'
+                    success: (result) ->
+                      console.log 'DELETE FILE: ' + req.fileName + ' FROM RECORD: ' + req.resourceId
+                      res.send()
+                  da.createDoc db, opts  
+              da.getDoc db, opts                           
           da.deleteFile db, opts
     da.getDoc db, opts
     
