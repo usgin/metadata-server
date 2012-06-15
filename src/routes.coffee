@@ -385,7 +385,7 @@ module.exports = routes =
                   next new errors.DatabaseWriteError 'Error writing document to the database'
                 success: (result) ->
                   console.log 'NEW FILE: ' + file.name + ' ATTACHED TO: ' + req.resourceId
-                  res.send '', { Location: "/record/#{ req.resourceId }/file/#{ file.name }" }, 202 
+                  res.send '', { Location: "/record/#{ req.resourceId }/file/#{ file.name }" }, 201
               da.createDoc db, opts
           da.getDoc db, opts
     da.getRev db, opts

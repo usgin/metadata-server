@@ -202,7 +202,7 @@ Currently a little confused about the details of generating a proper POST. Howev
 	</form>
 	
 ### Possible Responses:
-- 202: The request was accepted. The *Location* header contains the URL that can be used to access the file directly.
+- 201: The file was attached successfully. The *Location* header contains the URL that can be used to access the file directly.
 - 404: The requested resourceId does not exist in the database.
 - 500: There was an error writing to the database.
 
