@@ -210,28 +210,17 @@ module.exports = routes =
           next new errors.NotFoundError 'Requested document: ' + req.resourceId + ' was not found'
         else          
           db = couch.getDb 'record'
-          opts = # The second viewDocs request finds the IDs for records that are a part of this collection
+          opts = # The second viewDocs request finds the records that are a part of this collection
             design: 'collections'
             format: 'ids'
+            clean_docs: true
             key: req.resourceId
             error: (err) ->
               next new errors.DatabaseReadError 'Error running database view'
-            success: (result) ->
-              if not result.rows[0]?
-                res.send []
-              else
-                ids = result.rows[0].value
+            success: (result) ->              
+                ids = (doc.id for doc in result)
                 console.log 'GOT COLLECTION RECORDS: ' + ids
-                opts = # The third fetchDocs request retrieves the collection's records
-                  keys: ids
-                  clean_docs: true
-                  include_docs: true
-                  error: (err) ->
-                    next new errors.DatabaseReadError 'Error reading documents from the database'
-                  success: (result) ->
-                    console.log 'GOT COLLECTION RECORDS: ' + ids
-                    res.send result
-                da.listDocs db, opts
+                res.send result
           da.viewDocs db, opts
     da.exists db, opts
     
@@ -255,14 +244,14 @@ module.exports = routes =
             error: (err) ->
               next new errors.DatabaseReadError 'Error running database view'
             success: (result) ->
-              console.log 'GOT COLLECTION RECORDS: ' + result.rows[0].value
+              console.log 'GOT COLLECTION RECORDS: ' + (doc.id for doc in result.rows)
               if req.format.match(/iso\.xml/)? # Handle the special case for iso.xml > web-accessible folder
-                res.render 'waf.jade', { title: 'Placeholder Title', records: result.rows[0].value }
+                res.render 'waf.jade', { title: 'Placeholder Title', records: (doc.id for doc in result.rows) }
               else
                 opts = # The third viewDocs request retrieves the collection's records through the right view
                   design: 'output'
                   format: req.format
-                  keys: result.rows[0].value
+                  keys: (doc.id for doc in result.rows)
                   clean_docs: true
                   error: (err) ->
                     next new errors.DatabaseReadError 'Error running database view'

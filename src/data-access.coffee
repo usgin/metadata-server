@@ -115,7 +115,7 @@ module.exports = da =
       if err?
         options.error err
       else       
-        response = (row.value for row in response.rows) if options.clean_docs                              
+        response = (cleanDoc row.value for row in response.rows) if options.clean_docs                              
         options.success response
   
   # Delete a document
