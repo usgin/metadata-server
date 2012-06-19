@@ -131,7 +131,7 @@ module.exports = routes =
                         HarvestDate: utils.getCurrentDate()
                         HarvestRecordId: doc.id
                       _.extend doc.value.HarvestInformation, harvestInfo 
-                      _.extend doc.value, { Collections: req.collections || [] }
+                      _.extend doc.value, { Collections: req.collections || [], ModifiedDate: utils.getCurrentDate() }
                     opts = # The fourth request places the transformed docs into the record database
                       docs: (doc.value for doc in transformedDocs.rows)
                       error: (err) ->
