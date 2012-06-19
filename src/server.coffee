@@ -48,91 +48,91 @@ setParams = (req, res, next) ->
 #  3) a chain of middleware functions that actually do something
 
 # Text-based search for records
-server.post /^\/search\/$/, ((req, res, next) -> 
+server.post /^\/metadata\/search\/$/, ((req, res, next) -> 
   req.routeId = 'search'
   next()), setParams,
   routes.search
 
 # List records or collections (as JSON)     
-server.get /^\/(record|collection)\/$/, ((req, res, next) -> 
+server.get /^\/metadata\/(record|collection)\/$/, ((req, res, next) -> 
   req.routeId = 'listResources'
   next()), setParams,
   routes.listResources
   
 # List records in a specific format  
-server.get /^\/record\.(iso\.xml|atom\.xml|geojson)$/, ((req, res, next) -> 
+server.get /^\/metadata\/record\.(iso\.xml|atom\.xml|geojson)$/, ((req, res, next) -> 
   req.routeId = 'viewRecords'
   next()), setParams,
   routes.viewRecords
 
 # Create a new record or collection  
-server.post /^\/(record|collection)\/$/, ((req, res, next) -> 
+server.post /^\/metadata\/(record|collection)\/$/, ((req, res, next) -> 
   req.routeId = 'newResource'
   next()), setParams,
   routes.newResource
   
 # Harvest an existing record
-server.post /^\/harvest\/$/, ((req, res, next) -> 
+server.post /^\/metadata\/harvest\/$/, ((req, res, next) -> 
   req.routeId = 'harvestRecord'
   next()), setParams,
   routes.harvestRecord
   
 # Retrieve a specific record or collection (as JSON)
-server.get /^\/(record|collection)\/([^\/]*)\/$/, ((req, res, next) -> 
+server.get /^\/metadata\/(record|collection)\/([^\/]*)\/$/, ((req, res, next) -> 
   req.routeId = 'getResource'
   next()), setParams,
   routes.getResource
   
 # Retrieve a specific record in a specific format  
-server.get /^\/record\/([^\/]*)\.(iso.xml|atom\.xml|geojson)$/, ((req, res, next) -> 
+server.get /^\/metadata\/record\/([^\/]*)\.(iso.xml|atom\.xml|geojson)$/, ((req, res, next) -> 
   req.routeId = 'viewRecord'
   next()), setParams,
   routes.viewRecord
 
 # Retrieve all the records in a specific collection (as JSON)
-server.get /^\/collection\/([^\/]*)\/records\/$/, ((req, res, next) -> 
+server.get /^\/metadata\/collection\/([^\/]*)\/records\/$/, ((req, res, next) -> 
   req.routeId = 'getCollectionRecords'
   next()), setParams,
   routes.getCollectionRecords
 
 # Retrieve all the records in a specific collection in a specific format
-server.get /^\/collection\/([^\/]*)\/records\.(iso.xml|atom\.xml|geojson)$/, ((req, res, next) -> 
+server.get /^\/metadata\/collection\/([^\/]*)\/records\.(iso.xml|atom\.xml|geojson)$/, ((req, res, next) -> 
   req.routeId = 'viewCollectionRecords'
   next()), setParams,
   routes.viewCollectionRecords
   
 # Update an existing record or collection  
-server.put /^\/(record|collection)\/([^\/]*)\/$/, ((req, res, next) -> 
+server.put /^\/metadata\/(record|collection)\/([^\/]*)\/$/, ((req, res, next) -> 
   req.routeId = 'updateResource'
   next()), setParams,
   routes.updateResource
   
 # Delete a record or collection  
-server.del /^\/(record|collection)\/([^\/]*)\/$/, ((req, res, next) -> 
+server.del /^\/metadata\/(record|collection)\/([^\/]*)\/$/, ((req, res, next) -> 
   req.routeId = 'deleteResource'
   next()), setParams,
   routes.deleteResource
   
 # List files associated with a specific record  
-server.get /^\/record\/([^\/]*)\/file\/$/, ((req, res, next) -> 
+server.get /^\/metadata\/record\/([^\/]*)\/file\/$/, ((req, res, next) -> 
   req.routeId = 'listFiles'
   next()), setParams,
   routes.listFiles
   
 # Associate a new file with a specific record  
-server.post /^\/record\/([^\/]*)\/file\/$/, ((req, res, next) -> 
+server.post /^\/metadata\/record\/([^\/]*)\/file\/$/, ((req, res, next) -> 
   req.routeId = 'newFile'
   next()), setParams,
   routes.newFile
   
 # Retrieve a specific file associated with a specific record
-server.get /^\/record\/([^\/]*)\/file\/(.*)$/, ((req, res, next) -> 
+server.get /^\/metadata\/record\/([^\/]*)\/file\/(.*)$/, ((req, res, next) -> 
   req.routeId = 'getFile'
   next()), setParams,
   routes.getFile
   
 # Delete a specific file associated with a specific record  
-server.del /^\/record\/([^\/]*)\/file\/(.*)$/, ((req, res, next) -> 
+server.del /^\/metadata\/record\/([^\/]*)\/file\/(.*)$/, ((req, res, next) -> 
   req.routeId = 'deleteFile'
   next()), setParams,
   routes.deleteFile

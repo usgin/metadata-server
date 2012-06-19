@@ -84,7 +84,7 @@ module.exports = routes =
           next new errors.DatabaseWriteError 'Error writing to the database'
         success: (newRecord) ->
           console.log 'NEW ' + req.resourceType + ' CREATED'
-          res.send '', { Location: "/#{ req.resourceType }/#{ newRecord.id }/" }, 201
+          res.send '', { Location: "/metadata/#{ req.resourceType }/#{ newRecord.id }/" }, 201
       da.createDoc db, opts      
         
   # Harvest an existing record
@@ -138,7 +138,7 @@ module.exports = routes =
                         next new errors.DatabaseWriteError 'Error writing to the database'
                       success: (newRecords) ->
                         console.log 'NEW ' + req.resourceType + ' HARVESTED'
-                        res.send ("/record/#{ rec.id }/" for rec in newRecords), 200                        
+                        res.send ("/metadata/record/#{ rec.id }/" for rec in newRecords), 200                        
                     da.createDocs db, opts
                 da.viewDocs db, opts
             da.createDocs db, opts
@@ -292,7 +292,7 @@ module.exports = routes =
               next new errors.DatabaseWriteError 'Error writing document to the database'
             success: (result) ->
               console.log 'UPDATE ' + req.resourceType + ': ' + req.resourceId
-              res.send '', { Location: "/#{ req.resourceType }/#{ result.id }/" }, 204
+              res.send '', { Location: "/metadata/#{ req.resourceType }/#{ result.id }/" }, 204
           da.createDoc db, opts
       da.getDoc db, opts
       
@@ -330,7 +330,7 @@ module.exports = routes =
       success: (doc) ->
         console.log 'LIST FILES: ' + req.resourceId
         result = [] if not doc._attachments?
-        result = ( { filename: name, location: "/record/#{ req.resourceId}/file/#{ name }" } for name, info of doc._attachments ) if doc._attachments?
+        result = ( { filename: name, location: "/metadata/record/#{ req.resourceId}/file/#{ name }" } for name, info of doc._attachments ) if doc._attachments?
         res.send result
     da.getDoc db, opts
     
@@ -361,7 +361,7 @@ module.exports = routes =
               # Add a link for the new file
               link =
                 Name: file.name
-                URL: "/record/#{ req.resourceId }/file/#{ file.name }"
+                URL: "/metadata/record/#{ req.resourceId }/file/#{ file.name }"
                 isLocal: true
               result.Links = [] if not result.Links?
               result.Links.push link
@@ -374,7 +374,7 @@ module.exports = routes =
                   next new errors.DatabaseWriteError 'Error writing document to the database'
                 success: (result) ->
                   console.log 'NEW FILE: ' + file.name + ' ATTACHED TO: ' + req.resourceId
-                  res.send '', { Location: "/record/#{ req.resourceId }/file/#{ file.name }" }, 201
+                  res.send '', { Location: "/metadata/record/#{ req.resourceId }/file/#{ file.name }" }, 201
               da.createDoc db, opts
           da.getDoc db, opts
     da.getRev db, opts
@@ -425,7 +425,7 @@ module.exports = routes =
                   else
                     next new errors.DatabaseReadError 'Error reading document from database'
                 success: (doc) ->
-                  doc.Links = ( link for link in doc.Links when link.URL isnt "/record/#{ req.resourceId }/file/#{ req.fileName }" )
+                  doc.Links = ( link for link in doc.Links when link.URL isnt "/metadata/record/#{ req.resourceId }/file/#{ req.fileName }" )
                   opts = # The fourth request updates the record, removing any Link elements
                     id: req.resourceId
                     data: _.extend(doc, { _rev: result.rev, ModifiedDate: utils.getCurrentDate() })
