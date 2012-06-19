@@ -55,9 +55,9 @@ module.exports =
     writeLinkInfo = (linkObj, isoLocation, addId) ->
       iso.setProperty isoLocation + ".gmd:MD_DigitalTransferOptions.id", computeId linkObj if addId?
       iso.setProperty isoLocation + ".gmd:MD_DigitalTransferOptions.gmd:onLine.gmd:CI_OnlineResource.gmd:linkage.gmd:URL.$t", objGet linkObj, "URL", "No URL Was Given" 
-      serviceType = objGet linkObj, "ServiceType", false
+      serviceType = objGet linkObj, "ServiceType", null
       descriptionString = objGet linkObj, "Description", ""
-      layerId = objGet linkObj, "layerId", false
+      layerId = objGet linkObj, "layerId", null
       
       if serviceType?
         iso.setProperty isoLocation + ".gmd:MD_DigitalTransferOptions.gmd:onLine.gmd:CI_OnlineResource.gmd:protocol.gco:CharacterString.$t", serviceType
