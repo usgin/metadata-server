@@ -52,7 +52,7 @@ If you installed CouchDB on Ubuntu through `apt-get install couchdb`, the file w
 - resourceId: the identifier for a resource
 - fileName: the name of a file attached to a metadata record
 
-## POST /search/
+## POST /metadata/search/
 Perform a full-text search through available metadata records
 
 ### Input Requirements:
@@ -69,7 +69,7 @@ The POST data should be a JSON object similar to the following:
 - 500: There was an error reading from the database.
 
 
-## GET /{resourceType}/
+## GET /metadata/{resourceType}/
 Lists all the available metadata collections or records in JSON format.
 
 ### Possible Responses:
@@ -77,7 +77,7 @@ Lists all the available metadata collections or records in JSON format.
 - 500: There was an error reading from the database. 
 
 
-## GET /record.{format}
+## GET /metadata/record.{format}
 Lists all the available metadata records in the format specified.
 
 ### Possible Responses:
@@ -88,7 +88,7 @@ Lists all the available metadata records in the format specified.
 - 500: There was an error reading from the database.
 
 
-## POST /{resourceType}/
+## POST /metadata/{resourceType}/
 Creates a new metadata collection or record from POST data.
 
 ### Input Requirements:
@@ -99,7 +99,7 @@ The POST data should be a JSON object representing a metadata collection or reco
 - 500: There was an error writing to the database.
 
 
-## POST /harvest/
+## POST /metadata/harvest/
 Creates a new metadata record by harvesting an existing record from a location specified in POST data
 
 ### Input Requirements:
@@ -118,7 +118,7 @@ The POST data should be a JSON object similar to the following:
 - 500: There was an error reading and/or writing to the database
 
 
-## GET /{resourceType}/{resourceId}/
+## GET /metadata/{resourceType}/{resourceId}/
 Retreives a single metadata record or collection, specified by its resourceId, in JSON format
 
 ### Possible Responses:
@@ -126,7 +126,7 @@ Retreives a single metadata record or collection, specified by its resourceId, i
 - 404: The requested resourceId does not exist in the database.
 - 500: There was an error reading from the database.
 
-## GET /record/{resourceId}.{format}
+## GET /metadata/record/{resourceId}.{format}
 Retrieves a single metadata record, specified by its resourceId, in the specified format
 
 
@@ -139,7 +139,7 @@ Retrieves a single metadata record, specified by its resourceId, in the specifie
 - 500: There was an error reading and/or formatting the document.
 
 
-## GET /collection/{resourceId}/records/
+## GET /metadata/collection/{resourceId}/records/
 Retrieves all the metadata records that belong to a collection specified by its resourceId in JSON format.
 
 ### Possible Responses:
@@ -148,7 +148,7 @@ Retrieves all the metadata records that belong to a collection specified by its 
 - 500: There was an error reading from the database.
 
 
-## GET /collection/{resourceId}/records.{format}
+## GET /metadata/collection/{resourceId}/records.{format}
 Retrieves all the metadata records that belong to a collection specified by its resourceId in the specified format.
 
 ### Possible Responses:
@@ -160,7 +160,7 @@ Retrieves all the metadata records that belong to a collection specified by its 
 - 500: There was an error reading and/or formatting the response.
 
 
-## PUT /{resourceType}/{resourceId}/
+## PUT /metadata/{resourceType}/{resourceId}/
 Updates an existing metadata record or collection using PUT data.
 
 ### Input Requirements:
@@ -172,7 +172,7 @@ The PUT data should be a JSON object representing a metadata collection or recor
 - 500: There was an error reading and/or writing to the database.
 
 
-## DELETE /{resourceType}/{resourceId}/
+## DELETE /metadata/{resourceType}/{resourceId}/
 Deletes an existing metadata record or collection specified by its resourceId.
 
 ### Possible Responses:
@@ -181,7 +181,7 @@ Deletes an existing metadata record or collection specified by its resourceId.
 - 500: There was an error reading and/or writing to the database.
 
 
-## GET /record/{resourceId}/file/
+## GET /metadata/record/{resourceId}/file/
 Lists all the file names and URLs that are attached to the metadata record specified by its resourceId.
 
 ### Possible Responses:
@@ -190,7 +190,7 @@ Lists all the file names and URLs that are attached to the metadata record speci
 - 500: There was an error reading from the database.
 
 
-## POST /record/{resourceId}/file/
+## POST /metadata/record/{resourceId}/file/
 Attach an uploaded file to an existing metadata record specified by its resourceId.
 
 ### Input Requirements
@@ -207,7 +207,7 @@ Currently a little confused about the details of generating a proper POST. Howev
 - 500: There was an error writing to the database.
 
 
-## GET /record/{resourceId}/file/{fileName}
+## GET /metadata/record/{resourceId}/file/{fileName}
 Retrieve a file specified by its fileName from a metadata record specified by its resourceId.
 
 ### Possible Responses:
@@ -216,7 +216,7 @@ Retrieve a file specified by its fileName from a metadata record specified by it
 - 500: There was an error reading from the database.
 
 
-## DELETE /record/{resourceId}/file/{fileName}
+## DELETE /metadata/record/{resourceId}/file/{fileName}
 Deletes a file specified by its fileName from a metadata record specified by its resourceId.
 
 ### Possible Responses:
