@@ -347,9 +347,10 @@ module.exports = routes =
         # The second request attaches the file to the record.
         file = (file for key, file of req.files)[0]
         fileStream = fs.createReadStream file.path
-        fileStream.pipe db.attachment.insert req.resourceId, file.name, null, file.type, { rev: rev }
-        fileStream.on 'end', ->
-          opts = # The third getDoc request retrieves the existing document
+        fileStream.pipe db.attachment.insert req.resourceId, file.name, null, file.type, { rev: rev }, (err, body) ->
+        #fileStream.on 'close', ->
+          
+          opts =
             id: req.resourceId
             error: (err) ->
               if err['status-code']? and err['status-code'] is 404
@@ -362,7 +363,6 @@ module.exports = routes =
                 Name: file.name
                 URL: "/record/#{ req.resourceId }/file/#{ file.name }"
                 isLocal: true
-                # Distributor: ???
               result.Links = [] if not result.Links?
               result.Links.push link
               

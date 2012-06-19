@@ -5,7 +5,7 @@ request = require 'request'
 # Simple function to clean up a document coming out of CouchDB
 cleanDoc = (doc) ->
   cleaned = _.extend {}, doc
-  cleaned.id = doc._id
+  cleaned.id = doc._id if doc._id?
   delete cleaned._id
   delete cleaned._rev
   delete cleaned._attachments
