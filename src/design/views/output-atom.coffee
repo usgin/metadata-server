@@ -59,7 +59,7 @@ module.exports =
       atom.setProperty "#{ thisPath }.contactInformation.address.zip.$t", objGet author, "ContactInformation.Address.Zip", ""    
 
     # Links
-    atomLinks = [ { "href": "/record/#{ doc._id }/", "rel": "alternate" } ]    
+    atomLinks = [ { "href": "/metadata/record/#{ doc._id }/", "rel": "alternate" } ]    
     for link, l in doc.Links or []
       atomLink =
         "href": toXmlValidText objGet link, "URL", ""
