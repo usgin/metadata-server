@@ -38,7 +38,9 @@ setParams = (req, res, next) ->
       req.resourceId = req.params[0]
     when 'getFile', 'deleteFile'
       req.resourceId = req.params[0]
-      req.fileName = req.params[1]  
+      req.fileName = req.params[1]
+    when 'getSchema'
+      req.schemaId = req.params[0]
   next()
       
 ### ROUTE DEFINITIONS ###
@@ -136,6 +138,15 @@ server.del /^\/metadata\/record\/([^\/]*)\/file\/(.*)$/, ((req, res, next) ->
   req.routeId = 'deleteFile'
   next()), setParams,
   routes.deleteFile
+  
+# Retrieve a list of schemas used by the server
+server.get /^\/metadata\/schema\/$/, routes.listSchemas
+
+# Retrieve a specific schema by ID
+server.get /^\/metadata\/schema\/([^\/]*)\/$/, ((req, res, next) ->
+  req.routeId = 'getSchema'
+  next()), setParams,
+  routes.getSchema
   
 ### END OF ROUTE DEFINITIONS ###
   

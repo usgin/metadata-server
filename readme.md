@@ -51,6 +51,7 @@ If you installed CouchDB on Ubuntu through `apt-get install couchdb`, the file w
 - format: one of *iso.xml, atom.xml* or *geojson*
 - resourceId: the identifier for a resource
 - fileName: the name of a file attached to a metadata record
+- schemaId: the name or id of a schema used by this application. Ids must be fully escaped (encodeURIcomponent works in javascript...).
 
 ## POST /metadata/search/
 Perform a full-text search through available metadata records
@@ -223,3 +224,20 @@ Deletes a file specified by its fileName from a metadata record specified by its
 - 204: The request was successful.
 - 404: Either the resourceId or fileName requested does not exist in the database.
 - 500: There was an error writing to the database. 
+
+
+## GET /metadata/schema/
+Retireve a list of all the json-schema used by this application
+
+### Possible Response
+- 200: A successful response will contain an array of objects with `name` and `schema` properties.
+- 500: There was some kind of server error.
+
+
+## GET /metadata/schema/{schemaId}/
+Retrieve a specific json-schema by name or by id
+- 200: A successful response will contain the json-schema object
+- 404: The requested schemaId did not point to a schema being used in this application 
+
+
+

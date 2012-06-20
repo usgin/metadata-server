@@ -226,6 +226,9 @@ module.exports = schemaUtils =
   byName: (name) ->
     return schemas[name] if schemas[name]?
     null        
+  
+  all: -> 
+    return ({ name: key, schema: value} for key, value of schemas)
       
   validate: (obj, schema) ->
     # First resolve schema refs

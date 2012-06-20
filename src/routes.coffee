@@ -1,6 +1,7 @@
 couch = require './couch-config'
 utils = require './utils'
 _ = require 'underscore'
+schemas = require './schemas'
 errors = require './errors'
 fs = require 'fs'
 request = require 'request'
@@ -440,3 +441,12 @@ module.exports = routes =
           da.deleteFile db, opts
     da.getDoc db, opts
     
+  # List the schemas used by this application
+  listSchemas: (req, res, next) ->
+    res.send(schemas.all()) 
+    
+  # Get a specific schema used by this application
+  getSchema: (req, res, next) ->
+    res.send(schemas.byId(req.schemaId)) if schemas.byId(req.schemaId)?
+    res.send(schemas.byName(req.schemaId)) if schemas.byName(req.schemaId)?
+    next new errors.NotFoundError "Requested schema: #{req.schemaId} was not found" 
