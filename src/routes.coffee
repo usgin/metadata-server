@@ -443,10 +443,19 @@ module.exports = routes =
     
   # List the schemas used by this application
   listSchemas: (req, res, next) ->
-    res.send(schemas.all()) 
+    res.send schemas.all()
     
   # Get a specific schema used by this application
   getSchema: (req, res, next) ->
-    res.send(schemas.byId(req.schemaId)) if schemas.byId(req.schemaId)?
-    res.send(schemas.byName(req.schemaId)) if schemas.byName(req.schemaId)?
-    next new errors.NotFoundError "Requested schema: #{req.schemaId} was not found" 
+    if schemas.byId(req.schemaId)?
+      if req.resolve
+        res.send schemas.resolve schemas.byId req.schemaId 
+      else
+        res.send schemas.byId req.schemaId
+    else if schemas.byName(req.schemaId)?
+      if req.resolve
+        res.send schemas.resolve schemas.byName req.schemaId 
+      else
+        res.send schemas.byName req.schemaId 
+    else
+      next new errors.NotFoundError "Requested schema: #{req.schemaId} was not found" 

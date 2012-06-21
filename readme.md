@@ -227,7 +227,7 @@ Deletes a file specified by its fileName from a metadata record specified by its
 
 
 ## GET /metadata/schema/
-Retireve a list of all the json-schema used by this application
+Retireve a list of all the json-schema used by this application.
 
 ### Possible Response
 - 200: A successful response will contain an array of objects with `name` and `schema` properties.
@@ -235,7 +235,8 @@ Retireve a list of all the json-schema used by this application
 
 
 ## GET /metadata/schema/{schemaId}/
-Retrieve a specific json-schema by name or by id
+Retrieve a specific json-schema by name or by id.
+*optional* Add `?resolve=true` to resolve all the refereces to other schema within the specified schema.
 - 200: A successful response will contain the json-schema object
 - 404: The requested schemaId did not point to a schema being used in this application 
 

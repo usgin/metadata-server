@@ -41,6 +41,9 @@ setParams = (req, res, next) ->
       req.fileName = req.params[1]
     when 'getSchema'
       req.schemaId = req.params[0]
+      if req.query.resolve?
+        req.resolve = req.query.resolve
+      else req.resolve = false       
   next()
       
 ### ROUTE DEFINITIONS ###

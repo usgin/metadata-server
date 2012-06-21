@@ -199,7 +199,22 @@ schemas =
         items:
           type: 'string'
 
+schemaCopy = (schema) ->
+  copy = {}
+  for key, sch of schema
+    if key is 'items'
+      copy.items = _.clone sch 
+    else if key is 'properties'
+      copy.properties = {}
+      for name, value of sch
+        copy.properties[name] = schemaCopy value
+    else
+      copy[key] = _.clone sch      
+  return copy
+  
 resolveRefs = (schema) ->
+  schema = schemaCopy schema
+  
   # Follow $refs
   if schema.$ref?
     resolved = _.extend {}, schema, schemaUtils.byId(schema.$ref) 
@@ -211,6 +226,10 @@ resolveRefs = (schema) ->
   _.extend resolved.properties, schemaUtils.byId(resolved['extends']).properties if resolved['extends']?
   delete resolved['extends']
   
+  # Resolve any $refs in items
+  if resolved.items? and resolved.items.$ref?
+    resolved.items = resolveRefs schemaUtils.byId resolved.items.$ref
+    
   # Resolve references in any properties
   for name, prop of resolved.properties
     resolved.properties[name] = resolveRefs(prop)
@@ -228,7 +247,7 @@ module.exports = schemaUtils =
     null        
   
   all: -> 
-    return ({ name: key, schema: value} for key, value of schemas)
+    return ({ name: key, schema: value } for key, value of schemas)
       
   validate: (obj, schema) ->
     # First resolve schema refs
@@ -241,7 +260,7 @@ module.exports = schemaUtils =
         return false if schema.minLength? and obj.length < schema.minLength
         return false if schema.maxLength? and obj.length > schema.maxLength
         return false if schema.enum? and obj not in schema.enum
-      when 'number'        
+      when 'number'
         return false if not _.isNumber(obj)
         return false if schema.minimum? and obj < schema.minimum
         return false if schema.maximum? and obj > schema.maximum
@@ -251,12 +270,11 @@ module.exports = schemaUtils =
         return false if schema.minItems and obj.length < schema.minItems
         return false if schema.maxItems and obj.length > schema.maxItems
         itemSchema = resolveRefs schema.items
-        return false if false in (schemaUtils.validate item, itemSchema for item in obj)      
+        return false if false in (schemaUtils.validate item, itemSchema for item in obj)     
       when 'object'
         return false if not _.isObject(obj)
         for name, prop of schema.properties
-          return false if prop.required and not obj[name]?
-          #console.log 'validating property: ' + name
+          return false if prop.required and not obj[name]?          
           return false if obj[name]? and schemaUtils.validate(obj[name], prop) is false
     true
     
