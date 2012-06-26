@@ -448,12 +448,12 @@ module.exports = routes =
   # Get a specific schema used by this application
   getSchema: (req, res, next) ->
     if schemas.byId(req.schemaId)?
-      if req.resolve
+      if req.resolve is true
         res.send schemas.resolve schemas.byId req.schemaId 
       else
         res.send schemas.byId req.schemaId
     else if schemas.byName(req.schemaId)?
-      if req.resolve
+      if req.resolve is true
         res.send schemas.resolve schemas.byName req.schemaId 
       else
         res.send schemas.byName req.schemaId 
