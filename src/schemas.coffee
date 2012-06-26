@@ -279,5 +279,17 @@ module.exports = schemaUtils =
     true
     
   resolve: resolveRefs
-      
-   
+  
+  emptyInstance: (schema) ->
+    schema = resolveRefs schema
+    switch schema.type
+      when 'string' then return ''
+      when 'number' then return 0
+      when 'boolean' then return true
+      when 'array' then return [ ]
+      when 'object'
+        result = {}
+        for name, prop of schema.properties
+          result[name] = schemaUtils.emptyInstance prop
+        return result
+ 

@@ -448,14 +448,16 @@ module.exports = routes =
   # Get a specific schema used by this application
   getSchema: (req, res, next) ->
     if schemas.byId(req.schemaId)?
-      if req.resolve is true
-        res.send schemas.resolve schemas.byId req.schemaId 
-      else
-        res.send schemas.byId req.schemaId
+      schema = schemas.byId req.schemaId 
     else if schemas.byName(req.schemaId)?
-      if req.resolve is true
-        res.send schemas.resolve schemas.byName req.schemaId 
-      else
-        res.send schemas.byName req.schemaId 
+      schema = schemas.byName req.schemaId
     else
-      next new errors.NotFoundError "Requested schema: #{req.schemaId} was not found" 
+      next new errors.NotFoundError "Requested schema: #{req.schemaId} was not found"
+      return
+    if req.resolve is true
+      res.send schemas.resolve schema
+    else if req.emptyInstance is true
+      res.send schemas.emptyInstance schema
+    else
+      res.send schema
+      

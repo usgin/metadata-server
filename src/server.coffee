@@ -41,9 +41,10 @@ setParams = (req, res, next) ->
       req.fileName = req.params[1]
     when 'getSchema'
       req.schemaId = req.params[0]
-      if req.query.resolve? and req.query.resolve is 'true'
-        req.resolve = JSON.parse(req.query.resolve)
-      else req.resolve = false       
+      for param in [ 'resolve', 'emptyInstance' ]
+        if req.query[param]? and req.query[param] is 'true'
+          req[param] = JSON.parse req.query[param]
+        else req[param] = false
   next()
       
 ### ROUTE DEFINITIONS ###
