@@ -19,7 +19,6 @@ designDocs =
   records: [ 
     require('./design/collections')
     require('./design/output')
-    require('./design/contacts')
     require('./design/search') 
   ]
   collections: [ require('./design/collectionInfo') ]
