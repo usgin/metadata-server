@@ -8,9 +8,9 @@ module.exports =
     
     # Index all the text in the default field
     idx = (obj) ->
-      for key, value of obj
+      for key, value of obj when key not in [ 'Distributor', 'Distributors' ] # Ignore distributor attribute of links
         switch typeof value
-          when 'object' then idx value
+          when 'object' then idx value # Ignore distributors themselves
           when 'function' then break
           else result.add value
       return
