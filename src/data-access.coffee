@@ -94,7 +94,7 @@ module.exports = da =
         options.error err
       else
         if options.clean_docs
-          options.success (cleanDoc row.doc for row in response.rows when not row.id.match(/^_/)?)
+          options.success (cleanDoc row.doc for row in response.rows when row.id? and not row.id.match(/^_/)?)
         else
           options.success response        
    
