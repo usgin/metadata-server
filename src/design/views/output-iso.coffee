@@ -125,7 +125,8 @@ module.exports =
           City: 'Tucson'
           State: 'AZ'
           Zip: '85701'
-    writeContactInfo azgsContact, "gmd:MD_Metadata.gmd:contact", "pointOfContact"   
+    metaContact = objGet doc, "MetadataContact", azgsContact
+    writeContactInfo metaContact, "gmd:MD_Metadata.gmd:contact", "pointOfContact"   
     
     # Metadata Modified Date
     iso.setProperty "gmd:MD_Metadata.gmd:dateStamp.gco:DateTime.$t", objGet doc, "ModifiedDate", ""  

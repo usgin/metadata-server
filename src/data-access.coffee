@@ -1,6 +1,7 @@
 _ = require 'underscore'
 schemas = require './schemas'
 request = require 'request'
+orgConfig = require './organization-config'
 
 # Simple function to clean up a document coming out of CouchDB
 cleanDoc = (doc) ->
@@ -171,8 +172,11 @@ module.exports = da =
       
   # Validate data
   validateRecord: (data, resourceType) ->
-    schema = schemas.byName('metadata') if resourceType is 'record'
-    schema = schemas.byName('collection') if resourceType is 'collection'
+    if resourceType is 'record'
+      schema = schemas.byName('metadata')
+      _.extend(data, { MetadataContact: orgConfig.defaultMetadataContact } ) if not data.MetadataContact?
+    if resourceType is 'collection'
+      schema = schemas.byName('collection') 
     return schemas.validate data, schema
     
   # Perform a search

@@ -88,6 +88,7 @@ module.exports = routes =
           res.send '', { Location: "/metadata/#{ req.resourceType }/#{ newRecord.id }/" }, 201
       da.createDoc db, opts      
         
+        
   # Harvest an existing record
   harvestRecord: (req, res, next) ->
     if not req.url? or not req.format?

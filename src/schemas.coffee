@@ -170,6 +170,9 @@ schemas =
         minItems: 0
         items:
           $ref: 'http://resources.usgin.org/uri-gin/usgin/schema/json-link/'
+      MetadataContact:
+        required: true
+        $ref: 'http://resources.usgin.org/uri-gin/usgin/schema/json-metadata-contact/'
       HarvestInformation:
         required: false
         $ref: 'http://resources.usgin.org/uri-gin/usgin/schema/json-harvest-information/'
