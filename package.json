@@ -2,7 +2,7 @@
 	"name": "metadata-server",
 	"author": "Arizona Geological Survey",
 	"description": "A server API for handling metadata in a CouchDB world.",
-    "version": "0.0.1",
+    "version": "0.1.0",
   	"private": true,
   	"dependencies": {
       	"express": "2.5.9",
