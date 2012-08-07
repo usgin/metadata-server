@@ -1,6 +1,7 @@
 build/*.js
 build/design/
 build/samples/
+build/helpers/
 .project
 .settings/
 node_modules/

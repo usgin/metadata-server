@@ -18,10 +18,17 @@ task 'watch', 'Watch source for changes', ->
       process.stderr.write data.toString()
     coffee.stdout.on 'data', (data) ->
       print data.toString()
-  
+
+task 'helpers', 'Watch helpers dir for changes', ->
+  coffee = spawn 'coffee', ['-w', '-c', '-o', 'build/helpers', 'helpers']
+  coffee.stderr.on 'data', (data) ->
+    process.stderr.write data.toString()
+  coffee.stdout.on 'data', (data) ->
+    print data.toString()
 task 'build', 'Build app from source', ->
   # Copy .js files from lib
   # Turns out this is hard.
   
   # Covert coffee-scripts
   std_build 'src', 'build'
+  std_build 'helpers', 'build/helpers'
