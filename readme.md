@@ -1,7 +1,7 @@
 # Installation
 ## Prerequisites:
 1. Node.js and NPM
-2. CouchDB
+2. CouchDB (v.1.2.0+)
 3. Expat and Node dev libraries
 4. Maven
 
