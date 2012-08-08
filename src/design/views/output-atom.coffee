@@ -1,5 +1,5 @@
 module.exports =  
-  map: (doc) ->
+  map: (doc, debug = false) ->
     objGet = (obj, prop, defVal) ->
       return defVal if not obj?
       props = prop.split '.'
@@ -82,8 +82,7 @@ module.exports =
     atom.setProperty "georss:box.$t", [w, s, e, n].join " " 
     
     # Finished!
-    emit doc._id, atom        
-
-
-
-
+    if debug
+      return
+    else
+      emit doc._id, atom        

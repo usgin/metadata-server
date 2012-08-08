@@ -1,5 +1,5 @@
 module.exports =  
-  map: (iso) ->
+  map: (iso, debug=false) ->         
     objGet = (obj, prop, defVal) ->
       return defVal if not obj?
       props = prop.split '.'
@@ -138,27 +138,53 @@ module.exports =
     isoDistributors = [ isoDistributors ] if isoDistributors['gmd:MD_Distributor']?
     doc.Distributors = (buildContact objGet isoDist, "gmd:MD_Distributor.gmd:distributorContact", {} for isoDist in isoDistributors)
 
-    # Distributor Links
+    # Distribution information
+    linksList = {}
+    
     onlineResource = (distOption) ->
         return objGet distOption, "gmd:MD_DigitalTransferOptions.gmd:onLine.gmd:CI_OnlineResource", {}
-        
-    for isoDist in isoDistributors
-      distOptions = objGet isoDist, "gmd:MD_Distributor.gmd:distributorTransferOptions", []
-      distOptions = [ distOptions ] if distOptions['gmd:MD_DigitalTransferOptions']?
-      responsibleParty = objGet isoDist, "gmd:MD_Distributor.gmd:distributorContact", {}             
-      distributorLinks = (buildLink onlineResource distOpt, responsibleParty for distOpt in distOptions)
-      
-    # Other distribution information
+    
+    # Links that are not attached to a distributor    
     distributions = objGet iso, "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions", []
     distributions = [ distributions ] if distributions["gmd:MD_DigitalTransferOptions"]?
     moreLinks = (buildLink onlineResource distOpt for distOpt in distributions)
     
-    # Add Links
-    linksList = {}
-    for link in distributorLinks
-      linksList[link.URL] = link
+    # Distributor Links    
+    linkLookup = {}
+    for distribution in distributions
+      id = objGet(distribution, "gmd:MD_DigitalTransferOptions.id", "")
+      linkLookup[id] = distribution
+      
+    getDistributorLink = (dist) ->
+      id = dist['xlink:href'].replace '#', ''      
+      result = linkLookup[id]            
+      return result    
+              
+    for isoDist in isoDistributors
+      distOptions = objGet isoDist, "gmd:MD_Distributor.gmd:distributorTransferOptions", []
+      distOptions = [ distOptions ] if distOptions['gmd:MD_DigitalTransferOptions']? or distOptions['xlink:href']?       
+      distOutput = []
+      
+      # xlinked ones should be in the regular transfer options, need to find the one with the right ID
+      for dist, idx in distOptions
+        if dist['xlink:href']?
+          distOutput.push getDistributorLink dist          
+        else
+          distOutput.push dist    
+      
+      # Build all the links for this distributor            
+      responsibleParty = objGet isoDist, "gmd:MD_Distributor.gmd:distributorContact", {}             
+      distributorLinks = (buildLink onlineResource(distOpt), responsibleParty for distOpt in distOutput)
+      
+      # Add them to the linksList
+      for link in distributorLinks
+        linksList[link.URL] = link
+        
+    # Add leftover links    
     for link in moreLinks
       linksList[link.URL] = link if not linksList[link.URL]?
+    
+    # Add links to the doc
     doc.Links = (link for url, link of linksList)
     
     # ResourceID
@@ -171,7 +197,10 @@ module.exports =
     doc.setProperty "Published", false
     
     # Finished!
-    emit iso._id, doc
+    if debug
+      return
+    else
+      emit iso._id, doc
     return
     
 

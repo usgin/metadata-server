@@ -1,5 +1,5 @@
 module.exports =  
-  map: (doc) ->
+  map: (doc, debug = false) ->
     objGet = (obj, prop, defVal) ->
       return defVal if not obj?
       props = prop.split '.'
@@ -221,14 +221,8 @@ module.exports =
           dl++
           
     # Finished!!
-    emit doc._id, iso
-    return 
-    
-    
-    
-    
-    
-    
-    
-    
-          
+    if debug
+      return
+    else
+      emit doc._id, iso
+    return

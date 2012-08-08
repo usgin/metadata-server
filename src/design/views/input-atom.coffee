@@ -1,5 +1,5 @@
 module.exports =  
-  map: (atom) ->
+  map: (atom, debug = false) ->
     objGet = (obj, prop, defVal) ->
       return defVal if not obj?
       props = prop.split '.'

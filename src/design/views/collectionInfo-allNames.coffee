@@ -1,3 +1,6 @@
 module.exports =  
-  map: (doc) ->
-    emit 'Title', doc.Title
+  map: (doc, debug = false) ->
+    if debug
+      return
+    else
+      emit 'Title', doc.Title

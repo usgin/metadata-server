@@ -1,5 +1,5 @@
 module.exports =  
-  map: (doc) ->
+  map: (doc, debug = false) ->
     objGet = (obj, prop, defVal) ->
       return defVal if not obj?
       props = prop.split '.'
@@ -56,5 +56,8 @@ module.exports =
     geojson.setProperty "crs.type", "name"
     geojson.setProperty "crs.properties.name", "urn:ogc:def:crs:OGC:1.3:CRS84"
     
-    emit doc._id, geojson
+    if debug
+      return
+    else
+      emit doc._id, geojson
     return
