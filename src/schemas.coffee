@@ -260,6 +260,7 @@ module.exports = schemaUtils =
     switch schema.type
       when 'string'
         return false if not _.isString(obj)
+        return false if obj is '' and schema.required
         return false if schema.minLength? and obj.length < schema.minLength
         return false if schema.maxLength? and obj.length > schema.maxLength
         return false if schema.enum? and obj not in schema.enum
