@@ -59,7 +59,7 @@ module.exports = utils =
           "xlink:href": "/metadata/collection/"
           "gmd:CI_Citation":
             "gmd:title":
-              "gmd:CharacterString":
+              "gco:CharacterString":
                 "$t": "Server Collections"
             "gmd:date":
               "gmd:CI_Date":
