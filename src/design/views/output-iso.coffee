@@ -182,10 +182,10 @@ module.exports =
     iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:topicCategory.gmd:MD_TopicCategoryCode.$t", "geoscientificInformation"        
     
     # Extent
-    iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:westBoundLongitude.gco:Decimal.$t", objGet doc, "GeographicExtent.WestBound"
-    iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:eastBoundLongitude.gco:Decimal.$t", objGet doc, "GeographicExtent.EastBound"
-    iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:southBoundLatitude.gco:Decimal.$t", objGet doc, "GeographicExtent.SouthBound"
-    iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:northBoundLatitude.gco:Decimal.$t", objGet doc, "GeographicExtent.NorthBound"
+    iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:westBoundLongitude.gco:Decimal.$t", "#{objGet doc, 'GeographicExtent.WestBound'}"
+    iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:eastBoundLongitude.gco:Decimal.$t", "#{objGet doc, 'GeographicExtent.EastBound'}"
+    iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:southBoundLatitude.gco:Decimal.$t", "#{objGet doc, 'GeographicExtent.SouthBound'}"
+    iso.setProperty "gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:northBoundLatitude.gco:Decimal.$t", "#{objGet doc, 'GeographicExtent.NorthBound'}"
     
     #**********************************************************************************************
     #* Distribution Info
