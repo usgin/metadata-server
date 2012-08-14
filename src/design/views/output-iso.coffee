@@ -76,11 +76,12 @@ module.exports =
       
     computeId = (linkObj) ->
       out = linkObj.URL.replace /http:\/\//, ""
+      out = out.replace /ftp:\/\//, ""
       out = out.replace /\//g, "-"
       out = out.replace /\./g, "-"
-      #out = out.replace /=/g, "-"
       out = out.replace /\?.+$/g, ""
       out = out.replace /\\/g, "-"
+      out = out.replace /\ /g, "_"      
       return out
       
     serviceTypes = ["OGC:WMS", "OGC:WFS", "OGC:WCS", "esri", "opendap"]
