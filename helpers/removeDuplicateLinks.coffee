@@ -34,16 +34,16 @@ allDocOpts =
       
         
       if update
-          updateOpts =
-            id: doc._id
-            data: doc
-            success: (result) ->
-              console.log "Updated #{result.id}"
-              return
-            error: (err) ->
-              console.log "Error updating #{result.id}"
-              return
-          access.createDoc db, updateOpts
+        updateOpts =
+          id: doc._id
+          data: doc
+          success: (result) ->
+            console.log "Updated #{result.id}"
+            return
+          error: (err) ->
+            console.log "Error updating #{result.id}"
+            return
+        access.createDoc db, updateOpts
   error: ->
     console.log 'Error retrieving docs'
     return
