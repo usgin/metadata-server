@@ -79,7 +79,9 @@ module.exports =
       out = out.replace /ftp:\/\//, ""
       out = out.replace /\//g, "-"
       out = out.replace /\./g, "-"
-      out = out.replace /\?.+$/g, ""
+      out = out.replace /\?/g, "-"
+      out = out.replace /\=/g, "-"
+      out = out.replace /&/g, ""
       out = out.replace /\\/g, "-"
       out = out.replace /\ /g, "_"      
       return out
