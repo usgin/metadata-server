@@ -77,20 +77,12 @@ module.exports =
     usedIds = []
     
     computeId = (linkObj) ->
-      out = linkObj.URL.replace /http:\/\//, ""
-      out = out.replace /ftp:\/\//, ""
-      out = out.replace /\//g, "-"
-      out = out.replace /\./g, "-"
-      out = out.replace /\?/g, "-"
-      out = out.replace /\=/g, "-"
-      out = out.replace /&/g, ""
-      out = out.replace /\\/g, "-"
-      out = out.replace /\ /g, "_"      
-      out = out.replace /^-*/, ""
-      out = out.replace /#/g, "-"
-      out = out.replace /%/g, '-'
-      out = out.replace /\+/g, '-'
+      # XML Ids have to start with letters -- replace anything at the start that is not a letter with "id-"
+      out = linkObj.URL.replace /^[^A-Za-z]/, "id-"
+      # XML Ids can contain alphanumeric characters and underscores
+      out = out.replace /[^_A-Za-z0-9]/g, "_"      
       
+      # Make sure we don't duplicate any IDs
       if usedIds.indexOf(out) >= 0
         out = "#{out}-duplicate"      
       usedIds.push out
