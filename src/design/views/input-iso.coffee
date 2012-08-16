@@ -115,8 +115,8 @@ module.exports =
     doc.Keywords = []
     descKeywords = objGet ident, 'gmd:descriptiveKeywords', []
     descKeywords = [ descKeywords ] if descKeywords['gmd:MD_Keywords']?
-    for descKeywords in descKeywords
-      keywords = objGet descKeywords, "gmd:MD_Keywords.gmd:keyword", []
+    for descKeyword in descKeywords
+      keywords = objGet descKeyword, "gmd:MD_Keywords.gmd:keyword", []
       keywords = [ keywords ] if keywords['gco:CharacterString']?
       for keyword in keywords
         words = objGet keyword, 'gco:CharacterString.$t', null        
