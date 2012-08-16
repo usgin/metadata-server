@@ -15,11 +15,18 @@ allDocOpts =
   success: (results) ->
     for doc in (result.doc for result in results.rows when not result.doc._id.match(/^_design/))
       pubDate = doc.PublicationDate or ''      
-      fullDateRegex = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)/
+      fullDateRegex = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/
       if not pubDate.match fullDateRegex
         # Everything in here doesn't match the full regex
         update = false
         
+        # Get rid of timezone stamps
+        hasTzRegEx = /(Z|-\d{2}:?\d{2})$/
+        hasTimezone = pubDate.match hasTzRegEx
+        if hasTimezone
+          doc.PublicationDate = pubDate.replace hasTzRegEx, ""
+          update = true
+            
         # Space-padded for some reason
         hasSpacesRegex = /(^ +| *$)/
         hasSpaces = pubDate.match hasSpacesRegex
