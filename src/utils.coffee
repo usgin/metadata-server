@@ -52,23 +52,24 @@ module.exports = utils =
   addCollectionKeywords: (iso, collectionNames) ->        
     outputKeywords = iso["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]
     collectionNames = ({"gco:CharacterString": { "$t": name } } for name in collectionNames)
-    newKeywordBlock =
-      "gmd:MD_Keywords":
-        "gmd:keyword": collectionNames
-        "gmd:thesaurusName":
-          "xlink:href": "/metadata/collection/"
-          "gmd:CI_Citation":
-            "gmd:title":
-              "gco:CharacterString":
-                "$t": "Server Collections"
-            "gmd:date":
-              "gmd:CI_Date":
-                "gmd:date":
-                  "gco:Date":
-                    "$t": "2012-06-06"
-                "gmd:dateType":
-                  "gmd:CI_DateTypeCode":
-                    "codeList": "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
-                    "codeListValue": "publication"
-    outputKeywords.push newKeywordBlock
+    if collectionNames.length > 0
+      newKeywordBlock =
+        "gmd:MD_Keywords":
+          "gmd:keyword": collectionNames
+          "gmd:thesaurusName":
+            "xlink:href": "/metadata/collection/"
+            "gmd:CI_Citation":
+              "gmd:title":
+                "gco:CharacterString":
+                  "$t": "Server Collections"
+              "gmd:date":
+                "gmd:CI_Date":
+                  "gmd:date":
+                    "gco:Date":
+                      "$t": "2012-06-06"
+                  "gmd:dateType":
+                    "gmd:CI_DateTypeCode":
+                      "codeList": "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+                      "codeListValue": "publication"
+      outputKeywords.push newKeywordBlock
     return iso
