@@ -19,7 +19,8 @@ designDocs =
   records: [ 
     require('./design/collections')
     require('./design/output')
-    require('./design/search') 
+    require('./design/search')
+    #require('./design/manage') 
   ]
   collections: [ require('./design/collectionInfo') ]
   harvests: [ require('./design/input') ]

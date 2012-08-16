@@ -83,7 +83,8 @@ module.exports =
       out = out.replace /\=/g, "-"
       out = out.replace /&/g, ""
       out = out.replace /\\/g, "-"
-      out = out.replace /\ /g, "_"      
+      out = out.replace /\ /g, "_"
+      out = out.replace /#/g, "-"      
       return out
       
     serviceTypes = ["OGC:WMS", "OGC:WFS", "OGC:WCS", "esri", "opendap"]
