@@ -73,7 +73,9 @@ module.exports =
         iso.setProperty isoLocation + ".gmd:MD_DigitalTransferOptions.gmd:onLine.gmd:CI_OnlineResource.gmd:function.gmd:CI_OnLineFunctionCode.codeListValue", "375"
         iso.setProperty isoLocation + ".gmd:MD_DigitalTransferOptions.gmd:onLine.gmd:CI_OnlineResource.gmd:function.gmd:CI_OnLineFunctionCode.codeList","http://www.fgdc.gov/nap/metadata/register/registerItemClasses.html#IC_88"
         iso.setProperty isoLocation + ".gmd:MD_DigitalTransferOptions.gmd:onLine.gmd:CI_OnlineResource.gmd:function.gmd:CI_OnLineFunctionCode.$t", "download"
-      
+    
+    usedIds = []
+    
     computeId = (linkObj) ->
       out = linkObj.URL.replace /http:\/\//, ""
       out = out.replace /ftp:\/\//, ""
@@ -84,6 +86,15 @@ module.exports =
       out = out.replace /&/g, ""
       out = out.replace /\\/g, "-"
       out = out.replace /\ /g, "_"      
+      out = out.replace /^-*/, ""
+      out = out.replace /#/g, "-"
+      out = out.replace /%/g, '-'
+      out = out.replace /\+/g, '-'
+      
+      if usedIds.indexOf(out) >= 0
+        out = "#{out}-duplicate"      
+      usedIds.push out
+            
       return out
       
     serviceTypes = ["OGC:WMS", "OGC:WFS", "OGC:WCS", "esri", "opendap"]
