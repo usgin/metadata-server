@@ -20,7 +20,7 @@ designDocs =
     require('./design/collections')
     require('./design/output')
     require('./design/search')
-    #require('./design/manage') 
+    require('./design/manage')
   ]
   collections: [ require('./design/collectionInfo') ]
   harvests: [ require('./design/input') ]
@@ -47,23 +47,23 @@ createDb = (dbName) ->
         saveDesignDoc dbName, designDoc for designDoc in designDocs[dbName] if designDocs[dbName]?
             
 saveDesignDoc = (dbName, designDoc) ->
-    opts = # The first getDoc request gets the existing design doc
-      id: designDoc._id
-      error: (err) ->
-        if err['status-code']? and err['status-code'] = 404
-          @success {} # There was no existing design doc. Create a new one.
-        else
+  opts = # The first getDoc request gets the existing design doc
+    id: designDoc._id
+    error: (err) ->
+      if err['status-code']? and err['status-code'] = 404
+        @success {} # There was no existing design doc. Create a new one.
+      else
+        console.log err
+    success: (doc) ->
+      opts = # The second request updates the design doc
+        id: designDoc._id
+        data: _.extend doc, designDoc
+        error: (err) ->
           console.log err
-      success: (doc) ->
-        opts = # The second request updates the design doc
-          id: designDoc._id
-          data: _.extend doc, designDoc
-          error: (err) ->
-            console.log err
-          success: (result) ->
-            console.log "Updated views in #{ dbName }"
-        da.createDoc couch.dbs[dbName], opts
-    da.getDoc couch.dbs[dbName], opts
+        success: (result) ->
+          console.log "Updated views in #{ dbName }"
+      da.createDoc couch.dbs[dbName], opts
+  da.getDoc couch.dbs[dbName], opts
     
 # Expose connections to the necessary databases, helper functions
 module.exports = couch =
