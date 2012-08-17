@@ -86,7 +86,7 @@ module.exports =
       if usedIds.indexOf(out) >= 0
         out = "#{out}-duplicate"      
       usedIds.push out
-            
+      
       return out
       
     serviceTypes = ["OGC:WMS", "OGC:WFS", "OGC:WCS", "esri", "opendap"]
