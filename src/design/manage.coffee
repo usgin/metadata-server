@@ -3,3 +3,5 @@ module.exports =
   language: 'javascript'
   views:
     invalidUrls: require './views/invalidUrls'
+    fromDrupalRepository: require './views/fromDrupalRepository'
+    fromMetaWiz: require './views/fromMetaWiz'
