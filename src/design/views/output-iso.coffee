@@ -76,7 +76,7 @@ module.exports =
     
     usedIds = []
     
-    computeId = (linkObj, addToUsed = false) ->
+    computeId = (linkObj, addToUsed = true) ->
       # XML Ids have to start with letters -- replace anything at the start that is not a letter with "id-"
       out = linkObj.URL.replace /^[^A-Za-z]/, "id-"
       # XML Ids can contain alphanumeric characters and underscores
@@ -206,7 +206,7 @@ module.exports =
     iso.setProperty "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions", []
     
     # Write all the links to gmd:transferOptions
-    writeLinkInfo(docLink, true), "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions." + l, true for docLink, l in docLinks
+    writeLinkInfo docLink, "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions." + l, true for docLink, l in docLinks
     
     # Loop through doc distributors. If links identify a distributor, then add it the the MD_Distributor
     for docDistributor, d in docDistributors
@@ -222,7 +222,7 @@ module.exports =
             # Create an empty array for this distributor's transferOptions
             iso.setProperty "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:distributor." + d + ".gmd:MD_Distributor.gmd:distributorTransferOptions", []
           # Write the link to the distributor's transferOptions as an xlink:href
-          iso.setProperty "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:distributor." + d + ".gmd:MD_Distributor.gmd:distributorTransferOptions." + dl + ".xlink:href", "#" + computeId docLink
+          iso.setProperty "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:distributor." + d + ".gmd:MD_Distributor.gmd:distributorTransferOptions." + dl + ".xlink:href", "#" + computeId docLink, false
           # Remove this link from the array, so subsequent loops are shorter
           #docLinks.splice l, 1
           # Increment the counter for the number of transferOptions this distributor has
