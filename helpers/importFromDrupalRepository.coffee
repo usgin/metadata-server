@@ -8,6 +8,11 @@ request = require 'request'
 fs = require 'fs'
 path = require 'path'
 
+config =
+  importCollectionId: "c9c0ad665765064c99d1788a1411efe3"
+  linkHost: 'repository.stategeothermaldata.org'
+  sourceHost: 'repository.usgin.org'
+
 class Logger extends Backbone.Model
   initialize: (options) ->
     @set stdLogPath: path.join __dirname, 'importFromDrupal.log'
@@ -91,7 +96,7 @@ class Dlio extends Backbone.Model
       json:
         recordUrl: @get 'metadata'
         inputFormat: 'iso.xml'
-        destinationCollections: [ "48b8bfb7f34c9799cc7d725753000141" ]
+        destinationCollections: [ "#{config.importCollectionId}" ]
     request postOpts, (err, response, body) ->
       if err?
         globalLogger.errMessage "Error harvesting #{self.id}: #{err}"
@@ -126,7 +131,7 @@ class Dlio extends Backbone.Model
       data = JSON.parse(body)
       data.Links = new Array() if not data.Links?
       data.Links.push
-        URL: "http://localhost:8000/metadata/record/#{metadataId}/file/#{fileName}"
+        URL: "http://#{config.linkHost}/metadata/record/#{metadataId}/file/#{fileName}"
         Name: "Downloadable File"
       request.put { uri: couchUrl, json: data }, (err, response, body) ->
         if err?
@@ -137,7 +142,7 @@ class Dlio extends Backbone.Model
         
         
 getNodes (nodesInUse, nodeLookup) ->
-  url = 'http://repository.usgin.org/node-files'
+  url = 'http://#{config.sourceHost}/node-files'
   request uri: url, (err, response, body) ->
     if not err and response.statusCode is 200
       globalLogger.logMessage "#{_.uniq(nodesInUse, true).length} Drupal Records are already in this repository."
