@@ -10,5 +10,5 @@ module.exports =
           links.push link.URL
           m = link.URL.match /\/dlio\/(\d{1,3})/
           nodes.push m[1]
-      emit("/repository/resource/#{doc._id}/", {links: links, nodes: nodes}) if fromDrupal
+      emit("/metadata/record/#{doc._id}/", {links: links, nodes: nodes}) if fromDrupal
     return
