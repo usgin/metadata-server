@@ -104,7 +104,11 @@ module.exports =
     pubDate = objGet(ident, "gmd:citation.gmd:CI_Citation.gmd:date.gmd:CI_Date.gmd:date.gco:DateTime.$t", "Publication Date Not Given").trim();
     pubDate = pubDate + ":00Z" if pubDate.match(/T\d\d:\d\d(?!:)/)?
     doc.setProperty "PublicationDate", pubDate
-
+    
+    # Metadata Contact
+    metaContact = objGet "gmd:contact"
+    doc.setProperty 'MetadataContact', buildContact metaContact
+    
     # Authors
     respParties = objGet ident, "gmd:citation.gmd:CI_Citation.gmd:citedResponsibleParty", []    
     respParties = [ respParties ] if respParties['gmd:CI_ResponsibleParty']?
