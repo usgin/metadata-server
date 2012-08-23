@@ -76,16 +76,17 @@ module.exports =
     
     usedIds = []
     
-    computeId = (linkObj) ->
+    computeId = (linkObj, addToUsed = false) ->
       # XML Ids have to start with letters -- replace anything at the start that is not a letter with "id-"
       out = linkObj.URL.replace /^[^A-Za-z]/, "id-"
       # XML Ids can contain alphanumeric characters and underscores
       out = out.replace /[^_A-Za-z0-9]/g, "_"      
       
       # Make sure we don't duplicate any IDs
-      if usedIds.indexOf(out) >= 0
-        out = "#{out}-duplicate"      
-      usedIds.push out
+      if addToUsed
+        if usedIds.indexOf(out) >= 0
+          out = "#{out}-duplicate"      
+        usedIds.push out
       
       return out
       
@@ -205,7 +206,7 @@ module.exports =
     iso.setProperty "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions", []
     
     # Write all the links to gmd:transferOptions
-    writeLinkInfo docLink, "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions." + l, true for docLink, l in docLinks
+    writeLinkInfo docLink, "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions." + l, true for docLink, l in docLinks, true
     
     # Loop through doc distributors. If links identify a distributor, then add it the the MD_Distributor
     for docDistributor, d in docDistributors
