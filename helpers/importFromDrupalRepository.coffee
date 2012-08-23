@@ -142,7 +142,7 @@ class Dlio extends Backbone.Model
         
         
 getNodes (nodesInUse, nodeLookup) ->
-  url = 'http://#{config.sourceHost}/node-files'
+  url = "http://#{config.sourceHost}/node-files"
   request uri: url, (err, response, body) ->
     if not err and response.statusCode is 200
       globalLogger.logMessage "#{_.uniq(nodesInUse, true).length} Drupal Records are already in this repository."
