@@ -157,7 +157,7 @@ getNodes (nodesInUse, nodeLookup) ->
           d.harvest()
           dliosToHarvest.push d
         else # Nodes that are already in the repository need to have files transferred
-          if transferAllFiles
+          if config.transferAllFiles
             dlio = _.extend row.dlio, 
               metadataId: nodeLookup[row.dlio.id].metadataId
               metadataUrl: nodeLookup[row.dlio.id].metadataUrl
