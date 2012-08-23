@@ -223,7 +223,7 @@ module.exports =
           # Write the link to the distributor's transferOptions as an xlink:href
           iso.setProperty "gmd:MD_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:distributor." + d + ".gmd:MD_Distributor.gmd:distributorTransferOptions." + dl + ".xlink:href", "#" + computeId docLink
           # Remove this link from the array, so subsequent loops are shorter
-          docLinks.splice l, 1
+          #docLinks.splice l, 1
           # Increment the counter for the number of transferOptions this distributor has
           dl++
           
