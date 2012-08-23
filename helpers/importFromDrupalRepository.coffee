@@ -12,7 +12,8 @@ config =
   importCollectionId: "c9c0ad665765064c99d1788a1411efe3"
   linkHost: 'repository.stategeothermaldata.org'
   sourceHost: 'repository.usgin.org'
-
+  transferAllFiles: false
+  
 class Logger extends Backbone.Model
   initialize: (options) ->
     @set stdLogPath: path.join __dirname, 'importFromDrupal.log'
@@ -156,15 +157,16 @@ getNodes (nodesInUse, nodeLookup) ->
           d.harvest()
           dliosToHarvest.push d
         else # Nodes that are already in the repository need to have files transferred
-          dlio = _.extend row.dlio, 
-            metadataId: nodeLookup[row.dlio.id].metadataId
-            metadataUrl: nodeLookup[row.dlio.id].metadataUrl
-            couchUrl: "http://localhost:5984/records/#{nodeLookup[row.dlio.id].metadataId}"          
-          dlio.files = new Array() if not dlio.files?                      
-          #if dliosToTransfer.length < 10
-          d = new Dlio(dlio) 
-          d.transferFiles()
-          dliosToTransfer.push d
+          if transferAllFiles
+            dlio = _.extend row.dlio, 
+              metadataId: nodeLookup[row.dlio.id].metadataId
+              metadataUrl: nodeLookup[row.dlio.id].metadataUrl
+              couchUrl: "http://localhost:5984/records/#{nodeLookup[row.dlio.id].metadataId}"          
+            dlio.files = new Array() if not dlio.files?                      
+            #if dliosToTransfer.length < 10
+            d = new Dlio(dlio) 
+            d.transferFiles()
+            dliosToTransfer.push d
       globalLogger.logMessage "Should harvest #{dliosToHarvest.length} out of #{JSON.parse(body).drupals.length} records from the Drupal Repository."
     else
       globalLogger.errMessage 'There was an error requesting information from Drupal.'
