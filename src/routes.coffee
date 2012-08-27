@@ -346,10 +346,16 @@ module.exports = routes =
         next new errors.NotFoundError 'Requested document: ' + req.resourceId + ' was not found' if err['status-code']? and err['status-code'] = 404
         next new errors.DatabaseReadError 'Error reading document from database'
       success: (rev) ->
+        # Function to sanitize file names
+        sanitize = (name) ->
+          result = name.replace /[^A-Za-z0-9\._-]/g, '-'
+          return result.toLowerCase()
+          
         # The second request attaches the file to the record.
         file = (file for key, file of req.files)[0]
         fileStream = fs.createReadStream file.path
-        fileStream.pipe db.attachment.insert req.resourceId, file.name, null, file.type, { rev: rev }, (err, body) ->
+        fileName = sanitize file.name
+        fileStream.pipe db.attachment.insert req.resourceId, fileName, null, file.type, { rev: rev }, (err, body) ->
         #fileStream.on 'close', ->
           
           opts =
@@ -362,8 +368,8 @@ module.exports = routes =
             success: (result) ->
               # Add a link for the new file
               link =
-                Name: file.name
-                URL: "/metadata/record/#{ req.resourceId }/file/#{ file.name }"
+                Name: fileName
+                URL: "/metadata/record/#{ req.resourceId }/file/#{ fileName }"
                 isLocal: true
               result.Links = [] if not result.Links?
               result.Links.push link
@@ -375,8 +381,8 @@ module.exports = routes =
                 error: (err) ->
                   next new errors.DatabaseWriteError 'Error writing document to the database'
                 success: (result) ->
-                  console.log 'NEW FILE: ' + file.name + ' ATTACHED TO: ' + req.resourceId
-                  res.send '', { Location: "/metadata/record/#{ req.resourceId }/file/#{ file.name }" }, 201
+                  console.log 'NEW FILE: ' + fileName + ' ATTACHED TO: ' + req.resourceId
+                  res.send '', { Location: "/metadata/record/#{ req.resourceId }/file/#{ fileName }" }, 201
               da.createDoc db, opts
           da.getDoc db, opts
     da.getRev db, opts
