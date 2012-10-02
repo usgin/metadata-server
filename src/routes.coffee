@@ -276,7 +276,7 @@ module.exports = routes =
     db = couch.getDb req.resourceType
     
     if not da.validateRecord req.body, req.resourceType
-      next new errors.ValidationError 'Uploaded data did not pass validation:\n' + req.body
+      next new errors.ValidationError 'Uploaded data did not pass validation:\n' + JSON.stringify req.body
     else
       opts = # The first getDoc request retrieves the existing document
         id: req.resourceId
