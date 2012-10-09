@@ -48,6 +48,8 @@ module.exports = utils =
       when 'iso.xml'
         return true if json['gmd:MD_Metadata']?
         return false
+      when 'fgdc.xml'
+        return true
         
   addCollectionKeywords: (iso, collectionNames) ->        
     outputKeywords = iso["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]

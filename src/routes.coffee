@@ -112,7 +112,9 @@ module.exports = routes =
                 else if _.isObject entry then entries = [ entry ]
                 else entries = []
               when 'iso.xml'
-                entries = [ data ]                                 
+                entries = [ data ]
+              when 'fgdc.xml'
+              	entries = [ data ]                                 
             opts = # The second request creates the records in the harvests database
               docs: entries
               error: (err) ->
