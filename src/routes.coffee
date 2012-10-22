@@ -119,7 +119,7 @@ module.exports = routes =
               docs: entries
               error: (err) ->
                 next new errors.DatabaseWriteError 'Error writing to the database'
-              success: (newHarvestDocs) ->                 
+              success: (newHarvestDocs) ->                  
                 opts = # The third request pulls the harvested records through the appropriate input view
                   design: 'input'
                   format: req.format

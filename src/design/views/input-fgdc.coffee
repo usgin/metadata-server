@@ -238,7 +238,7 @@ module.exports =
     doc.setProperty "MetadataContact", buildContact contPer, contOrg, contTel, contEma, contStr, contCit, contSta, contZip
     
     # Harvest information
-    
+    doc.setProperty "HarvestInformation.OriginalFileIdentifier", (objGet fgdc, "metadata.distinfo.resdesc.$t", "metadata") + "-" + (objGet ident, "citation.citeinfo.onlink.$t", "Missing")
     
     # Published
     doc.setProperty "Published", false
