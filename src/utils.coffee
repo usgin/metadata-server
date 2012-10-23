@@ -37,20 +37,24 @@ module.exports = utils =
     return ISODateString now
     
   validateHarvestFormat: (format, data) ->
-    try
-      json = xml2json.toJson data, { object: true, reversible: true }
-    catch error
-      return false
-    switch format
-      when 'atom.xml'
-        return true if json.feed?
+    if format is 'csv'
+      return true
+    else
+      try
+        json = xml2json.toJson data, { object: true, reversible: true }
+      catch error
         return false
-      when 'iso.xml'
-        return true if json['gmd:MD_Metadata']?
-        return false
-      when 'fgdc.xml'
-        return true if json.metadata?
-        return false
+      switch format
+        when 'atom.xml'
+          return true if json.feed?
+          return false
+        when 'iso.xml'
+          return true if json['gmd:MD_Metadata']?
+          return false
+        when 'fgdc.xml'
+          return true if json.metadata?
+          return false
+
         
   addCollectionKeywords: (iso, collectionNames) ->        
     outputKeywords = iso["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]
