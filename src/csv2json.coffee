@@ -16,7 +16,7 @@ module.exports = csv2json =
     entries = []   
     
     csv().from(body)
-    .transform (data) ->    
+    .transform (data) ->   
       return data
       
     .on 'record', (data, index) -> 
@@ -30,7 +30,7 @@ module.exports = csv2json =
         if data.length is fields.length # Identify if this is a valid record
            record = {}
            for da, i in data # Iterate fields for this record
-             record[fields[i]] = da            
+             if (da? and (da != '')) then record[fields[i]] = da            
            entries.push record                
         else
           console.log ('Record' + index + 'is not correct!')
