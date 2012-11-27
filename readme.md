@@ -112,7 +112,7 @@ The POST data should be a JSON object similar to the following:
 		"destinationCollections": [ "identifier-for-some-collection" ] // <-- optional parameter
 	}
 
-... where inputFormat is one of *iso.xml* or *atom.xml*
+... where inputFormat is one of *iso.xml*, *atom.xml*, *fgdc.xml* or *csv*
 ### Possible Responses:
 - 200: The request was successful. The response contains an array of URLs at which the newly created metadata records can be located.
 - 400: Either POST data did not contain the requisite data, the URL given was invalid, or the content at the given URL did not conform to the specified inputFormat
