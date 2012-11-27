@@ -81,7 +81,7 @@ server.post /^\/metadata\/(record|collection)\/$/, ((req, res, next) ->
 server.post /^\/metadata\/harvest\/$/, ((req, res, next) -> 
   req.routeId = 'harvestRecord'
   next()), setParams,
-  routes.harvestRecord
+  routes.harvestRecord, routes.saveRecord
   
 # Retrieve a specific record or collection (as JSON)
 server.get /^\/metadata\/(record|collection)\/([^\/]*)\/$/, ((req, res, next) -> 

@@ -7,10 +7,10 @@ fs = require 'fs'
 request = require 'request'
 da = require './data-access'
 xml2json = require 'xml2json'
+csv2json = require './csv2json'
   
 ### THESE ARE ALL THE ROUTE MIDDLEWARE FUNCTIONS ###
 module.exports = routes = 
-
 
   # Text-based search for records
   search: (req, res, next) ->
@@ -90,7 +90,8 @@ module.exports = routes =
         
         
   # Harvest an existing record
-  harvestRecord: (req, res, next) ->
+  harvestRecord: (req, res, next) ->    
+    # Parse the request
     if not req.url? or not req.format?
       next new errors.ArgumentError 'Request did not supply the requisite arguments: url and format.'
     else
@@ -102,50 +103,60 @@ module.exports = routes =
         else
           if not utils.validateHarvestFormat req.format, body
             next new errors.ValidationError 'The document at the given URL did not match the format specified.'
-          else            
-            db = couch.getDb 'harvest'
-            data = xml2json.toJson(body, { object: true, reversible: true })
-            switch req.format
-              when 'atom.xml'
-                entry = data.feed.entry
-                if _.isArray entry then entries = entry
-                else if _.isObject entry then entries = [ entry ]
-                else entries = []
-              when 'iso.xml'
-                entries = [ data ]                                 
-            opts = # The second request creates the records in the harvests database
-              docs: entries
+          else                       
+            if req.format == 'csv' # Read CSV
+              csv2json.readCSV body, req, res, next
+            else # Read other xml format
+              data = xml2json.toJson(body, { object: true, reversible: true })
+              switch req.format
+                when 'atom.xml'
+                  entry = data.feed.entry
+                  if _.isArray entry then entries = entry
+                  else if _.isObject entry then entries = [ entry ]
+                  else entries = []
+                when 'iso.xml'
+                  entries = [ data ]
+                when 'fgdc.xml'
+                	entries = [ data ]                                 
+              req.entries = entries
+              next()
+
+  # Put data in the database
+  saveRecord: (req, res, next) ->
+    entries = req.entries
+    db = couch.getDb 'harvest'
+    opts = # The second request creates the records in the harvests database
+      docs: entries
+      error: (err) ->
+        next new errors.DatabaseWriteError 'Error writing to the database'
+      success: (newHarvestDocs) ->                  
+        opts = # The third request pulls the harvested records through the appropriate input view
+          design: 'input'
+          format: req.format
+          keys: (doc.id for doc in newHarvestDocs)
+          error: (err) ->
+            next new errors.DatabaseReadError 'Error reading document from database'
+          success: (transformedDocs) ->
+            db = couch.getDb 'record'
+            for doc in transformedDocs.rows
+              harvestInfo =
+                OriginalFormat: req.format
+                HarvestURL: req.url
+                HarvestDate: utils.getCurrentDate()
+                HarvestRecordId: doc.id
+              _.extend doc.value.HarvestInformation, harvestInfo 
+              _.extend doc.value, { Collections: req.collections || [], ModifiedDate: utils.getCurrentDate() }
+            opts = # The fourth request places the transformed docs into the record database
+              docs: (doc.value for doc in transformedDocs.rows)
               error: (err) ->
                 next new errors.DatabaseWriteError 'Error writing to the database'
-              success: (newHarvestDocs) ->                 
-                opts = # The third request pulls the harvested records through the appropriate input view
-                  design: 'input'
-                  format: req.format
-                  keys: (doc.id for doc in newHarvestDocs)
-                  error: (err) ->
-                    next new errors.DatabaseReadError 'Error reading document from database'
-                  success: (transformedDocs) ->
-                    db = couch.getDb 'record'
-                    for doc in transformedDocs.rows
-                      harvestInfo =
-                        OriginalFormat: req.format
-                        HarvestURL: req.url
-                        HarvestDate: utils.getCurrentDate()
-                        HarvestRecordId: doc.id
-                      _.extend doc.value.HarvestInformation, harvestInfo 
-                      _.extend doc.value, { Collections: req.collections || [], ModifiedDate: utils.getCurrentDate() }
-                    opts = # The fourth request places the transformed docs into the record database
-                      docs: (doc.value for doc in transformedDocs.rows)
-                      error: (err) ->
-                        next new errors.DatabaseWriteError 'Error writing to the database'
-                      success: (newRecords) ->
-                        console.log 'NEW ' + req.resourceType + ' HARVESTED'
-                        res.send ("/metadata/record/#{ rec.id }/" for rec in newRecords), 200                        
-                    da.createDocs db, opts
-                da.viewDocs db, opts
+              success: (newRecords) ->
+                console.log 'NEW ' + req.resourceType + ' HARVESTED'
+                res.send ("/metadata/record/#{ rec.id }/" for rec in newRecords), 200                        
             da.createDocs db, opts
-            
-            
+        da.viewDocs db, opts
+    da.createDocs db, opts 
+                  
   # Retrieve a specific record or collection (as JSON)
   getResource: (req, res, next) ->
     db = couch.getDb req.resourceType

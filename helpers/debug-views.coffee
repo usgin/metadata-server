@@ -7,6 +7,7 @@ allowedViews =
   'collections-ids': 'record'
   'input-atom': 'harvest'
   'input-iso': 'harvest'
+  'input-fgdc': 'harvest'
   'output-atom': 'record'
   'output-geojson': 'record'
   'output-iso': 'record'
