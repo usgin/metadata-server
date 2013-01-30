@@ -15,11 +15,12 @@ db = couch.getDb 'record'
 existingCollection = "9e15e1a59b768b330d029e86dc032d06"
 
 # Specify the collections that you also want these resources added to
-newCollections = [
+allCollections = [
   "fd62bbde5b68ce93e4ba348bc70328eb",
   "ba2f0b9d21f71acfe10609f76e0cfd6c",
-  "fd62bbde5b68ce93e4ba348bc703d49e"
+  "fd62bbde5b68ce93e4ba348bc703d49e",
 ]
+allCollections.push existingCollection
 
 # Do you want to publish the records?
 publish = true
@@ -33,7 +34,7 @@ allDocOpts =
       if not doc.Collections?
         doc.Collections = []
       if existingCollection in doc.Collections
-        doc.Collections.push col for col in existingCollection
+        doc.Collections = allCollections
         if publish is true 
           doc.Published = true
         update = true
