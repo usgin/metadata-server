@@ -30,6 +30,8 @@ allDocOpts =
     for doc in (result.doc for result in results.rows when not result.doc._id.match(/^_design/))
       update = false
       
+      if doc.Collections is null
+        doc.Collections = []
       if existingCollection in doc.Collections
         doc.Collections.push col for col in existingCollection
         if publish is true 
