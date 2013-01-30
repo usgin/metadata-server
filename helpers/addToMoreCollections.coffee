@@ -21,6 +21,9 @@ newCollections = [
   "fd62bbde5b68ce93e4ba348bc703d49e"
 ]
 
+# Do you want to publish the records?
+publish = true
+
 allDocOpts = 
   include_docs: true
   success: (results) ->
@@ -29,6 +32,8 @@ allDocOpts =
       
       if existingCollection in doc.Collections
         doc.Collections.push existingCollections...
+        if publish is true 
+          doc.Published = true
         update = true
         
       if update
