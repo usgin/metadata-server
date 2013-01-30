@@ -31,7 +31,7 @@ allDocOpts =
       update = false
       
       if existingCollection in doc.Collections
-        doc.Collections.push existingCollections...
+        doc.Collections.push col for col in existingCollection
         if publish is true 
           doc.Published = true
         update = true
