@@ -25,32 +25,37 @@ allCollections.push existingCollection
 # Do you want to publish the records?
 publish = true
 
-allDocOpts = 
-  include_docs: true
-  success: (results) ->
-    for doc in (result.doc for result in results.rows when not result.doc._id.match(/^_design/))
-      update = false
-      
-      if not doc.Collections?
-        doc.Collections = []
-      if existingCollection in doc.Collections
-        doc.Collections = allCollections
-        if publish is true 
-          doc.Published = true
-        update = true
+addToMoreCollections = (input_collection, new_collections, publish=true) ->
+  new_collections.push input_collection
+  
+  allDocOpts = 
+    include_docs: true
+    success: (results) ->
+      for doc in (result.doc for result in results.rows when not result.doc._id.match(/^_design/))
+        update = false
         
-      if update
-        updateOpts =
-          id: doc._id
-          data: doc
-          success: (result) ->
-            console.log "Updated #{result.id}"
-            return
-          error: (err) ->
-            console.log "Error updating #{result.id}"
-            return
-        access.createDoc db, updateOpts
-  error: ->
-    console.log 'Error retrieving docs'
-    return
-access.listDocs db, allDocOpts
+        if not doc.Collections?
+          doc.Collections = []
+        if input_collection in doc.Collections
+          doc.Collections = new_collections
+          if publish is true 
+            doc.Published = true
+          update = true
+          
+        if update
+          updateOpts =
+            id: doc._id
+            data: doc
+            success: (result) ->
+              console.log "Updated #{result.id}"
+              return
+            error: (err) ->
+              console.log "Error updating #{result.id}"
+              return
+          access.createDoc db, updateOpts
+    error: ->
+      console.log 'Error retrieving docs'
+      return
+  access.listDocs db, allDocOpts
+  
+exports.addToMoreCollections = addToMoreCollections
