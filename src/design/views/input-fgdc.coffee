@@ -106,7 +106,7 @@ module.exports =
     pubdate = objGet ident, "citation.citeinfo.pubdate.$t", null
     pubdate = pubdate + objGet ident, "citation.citeinfo.pubtime.$t", null
     if pubdate?
-      doc.setProperty "PublicationDate", pubdate 
+      doc.setProperty "PublicationDate", pubdate.toString() 
     else
       doc.setProperty "PublicationDate", "Missing"
     
