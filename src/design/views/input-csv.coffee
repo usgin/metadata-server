@@ -54,7 +54,7 @@ module.exports =
         addr.Street = csv[obj.street] || 'Missing'
         addr.City = csv[obj.city] || 'Missing'
         addr.State = csv[obj.state] || 'Missing'
-        addr.Zip = csv[obj.zip] || 'Missing'
+        addr.Zip = csv[obj.zip].toString() || 'Missing'
  
     # Title
     doc.Title = csv['title'] || 'Missing'
@@ -91,10 +91,10 @@ module.exports =
     
     # Geographic extent
     doc.GeographicExtent =      
-      NorthBound: csv['north_bounding_latitude'] || 'Missing'
-      SouthBound: csv['south_bounding_latitude'] || 'Missing'
-      EastBound: csv['east_bounding_longitude'] || 'Missing'
-      WestBound: csv['west_bounding_longitude'] || 'Missing'
+      NorthBound: (parseFloat csv['north_bounding_latitude']) || 'Missing'
+      SouthBound: (parseFloat csv['south_bounding_latitude']) || 'Missing'
+      EastBound: (parseFloat csv['east_bounding_longitude']) || 'Missing'
+      WestBound: (parseFloat csv['west_bounding_longitude']) || 'Missing'
     
     # Distributors
     doc.Distributors = []
