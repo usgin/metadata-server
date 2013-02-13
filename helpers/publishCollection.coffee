@@ -33,7 +33,7 @@ process.argv.forEach (val, index, array)->
                   error: (err) ->
                     console.log "Error publishing #{result.id}"
                     return           
-              access.createDoc dbRecord, opts
+                access.createDoc dbRecord, opts
     error: ->
       console.log 'Error retrieving docs'
       return
