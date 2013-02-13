@@ -16,6 +16,7 @@ process.argv.forEach (val, index, array)->
     include_docs: true
     success: (results) ->
       for doc in (result.doc for result in results.rows when not result.doc._id.match(/^_design/))
+        update = false
         if doc.Collections?
           for collection in doc.Collections
             if collection == val
