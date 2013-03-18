@@ -19,3 +19,9 @@ Publish all the records under the specified collection
 	```
 	node {CURRENT_DIR}/publishCollection.js {COLLECTION_ID_1} {COLLECTION_ID_2} ...
 	``` 
+	
+## deleteUnpublishedRecords
+Delete all unpublished records
+	```
+	node {CURRENT_DIR}/deleteUublishedCollection.js
+	``` 
