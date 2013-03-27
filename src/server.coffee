@@ -28,6 +28,10 @@ setParams = (req, res, next) ->
       req.url = req.body.recordUrl
       req.format = req.body.inputFormat
       req.collections = req.body.destinationCollections if req.body.destinationCollections?
+    when 'uploadRecord'
+      req.collections = req.body.destinationCollections if req.body.destinationCollections?
+      req.format = req.body.format
+      req.data = req.body.data
     when 'getResource', 'updateResource', 'deleteResource'
       req.resourceType = req.params[0]
       req.resourceId = req.params[1]
@@ -82,6 +86,12 @@ server.post /^\/metadata\/harvest\/$/, ((req, res, next) ->
   req.routeId = 'harvestRecord'
   next()), setParams,
   routes.harvestRecord, routes.saveRecord
+  
+# Upload an existing record
+server.post /^\/metadata\/upload\/$/, ((req, res, next) -> 
+  req.routeId = 'uploadRecord'
+  next()), setParams,
+  routes.uploadRecord, routes.saveRecord
   
 # Retrieve a specific record or collection (as JSON)
 server.get /^\/metadata\/(record|collection)\/([^\/]*)\/$/, ((req, res, next) -> 

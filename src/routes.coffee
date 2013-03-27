@@ -90,7 +90,7 @@ module.exports = routes =
         
         
   # Harvest an existing record
-  harvestRecord: (req, res, next) ->    
+  harvestRecord: (req, res, next) ->   
     # Parse the request
     if not req.url? or not req.format?
       next new errors.ArgumentError 'Request did not supply the requisite arguments: url and format.'
@@ -120,6 +120,32 @@ module.exports = routes =
                 	entries = [ data ]                                 
               req.entries = entries
               next()
+  # Upload an existing record
+  uploadRecord: (req, res, next) ->
+    body = req.data
+    
+    if not req.data? or not req.format?
+      next new errors.ArgumentError 'Request did not supply the requisite arguments: data and format.'
+    else
+      if not utils.validateHarvestFormat req.format, body
+        next new errors.ValidationError 'The document at the given URL did not match the format specified.'
+      else                       
+        if req.format == 'csv' # CSV file has been pasrsed in Django
+          req.entries = body
+        else # Read other xml format
+          data = xml2json.toJson(body, { object: true, reversible: true })
+          switch req.format
+            when 'atom.xml'
+              entry = data.feed.entry
+              if _.isArray entry then entries = entry
+              else if _.isObject entry then entries = [ entry ]
+              else entries = []
+            when 'iso.xml'
+              entries = [ data ]
+            when 'fgdc.xml'
+              entries = [ data ]                                 
+          req.entries = entries
+        next()
 
   # Put data in the database
   saveRecord: (req, res, next) ->
@@ -155,7 +181,7 @@ module.exports = routes =
                 res.send ("/metadata/record/#{ rec.id }/" for rec in newRecords), 200                        
             da.createDocs db, opts
         da.viewDocs db, opts
-    da.createDocs db, opts 
+    da.createDocs db, opts
                   
   # Retrieve a specific record or collection (as JSON)
   getResource: (req, res, next) ->
