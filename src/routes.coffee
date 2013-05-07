@@ -90,7 +90,8 @@ module.exports = routes =
         
         
   # Harvest an existing record
-  harvestRecord: (req, res, next) ->   
+  harvestRecord: (req, res, next) ->
+    #console.log req
     # Parse the request
     if not req.url? or not req.format?
       next new errors.ArgumentError 'Request did not supply the requisite arguments: url and format.'
@@ -120,6 +121,7 @@ module.exports = routes =
                 	entries = [ data ]                                 
               req.entries = entries
               next()
+              
   # Upload an existing record
   uploadRecord: (req, res, next) ->
     body = req.data
@@ -150,6 +152,8 @@ module.exports = routes =
   # Put data in the database
   saveRecord: (req, res, next) ->
     entries = req.entries
+    #for ent in entries
+      #console.log "NEW ENTRY TITLE: " + ent.title
     db = couch.getDb 'harvest'
     opts = # The second request creates the records in the harvests database
       docs: entries
@@ -177,8 +181,9 @@ module.exports = routes =
               error: (err) ->
                 next new errors.DatabaseWriteError 'Error writing to the database'
               success: (newRecords) ->
-                console.log 'NEW ' + req.resourceType + ' HARVESTED'
-                res.send ("/metadata/record/#{ rec.id }/" for rec in newRecords), 200                        
+                #console.log 'NEW ' + req.format + ' HARVESTED'
+                resBody = ("/metadata/record/#{ rec.id }/" for rec in newRecords)
+                res.send resBody, 200                        
             da.createDocs db, opts
         da.viewDocs db, opts
     da.createDocs db, opts
