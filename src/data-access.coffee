@@ -16,7 +16,7 @@ cleanKeywords = (doc) ->
   doc.Keywords ?= []
   doc.Keywords = _.map doc.Keywords, (keyword) ->
     return keyword.trim()
-  doc.Keywords = _.reject doc.Keywords, (keywod) ->
+  doc.Keywords = _.reject doc.Keywords, (keyword) ->
     return keyword is ''
   return doc
 
