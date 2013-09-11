@@ -12,12 +12,23 @@ cleanDoc = (doc) ->
   delete cleaned._attachments
   return cleaned
 
+cleanKeywords = (doc) ->
+  doc.Keywords ?= []
+  doc.Keywords = _.map doc.Keywords, (keyword) ->
+    return keyword.trim()
+  doc.Keywords = _.reject doc.Keywords, (keywod) ->
+    return keyword is ''
+  return doc
+
 module.exports = da =
   # Create a new document in the given database
   createDoc: (db, options) ->
     options.data ?= {}
     options.success ?= ->
     options.error ?= ->
+    
+    options.data = cleanKeywords options.data
+    
     results = (err, response) ->
       if err?
         options.error err
@@ -33,6 +44,9 @@ module.exports = da =
     options.docs ?= []
     options.success ?= ->
     options.error ?= ->
+    
+    options.docs = _.map options.docs, cleanKeywords
+    
     db.bulk { "docs": options.docs }, (err, response) ->
       if err?
         options.error err
