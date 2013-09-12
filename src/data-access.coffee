@@ -14,10 +14,17 @@ cleanDoc = (doc) ->
 
 cleanKeywords = (doc) ->
   doc.Keywords ?= []
+  _.each doc.Keywords, (keyword) ->
+    if keyword.split(',').length > 1
+        doc.Keywords = _.union doc.Keywords, keyword.split ','
+    else if keyword.split(';').length > 1
+        doc.Keywords = _.union doc.Keywords, keyword.split ';'
+        
   doc.Keywords = _.map doc.Keywords, (keyword) ->
-    return keyword.trim()
+    return keyword.toLowerCase().trim()
+
   doc.Keywords = _.reject doc.Keywords, (keyword) ->
-    return keyword is ''
+    return keyword is '' or keyword.indexOf(',') isnt -1 or keyword.indexOf(';') isnt -1
   return doc
 
 module.exports = da =
