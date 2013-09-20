@@ -57,7 +57,7 @@ module.exports =
       iso.setProperty isoLocation + ".gmd:MD_DigitalTransferOptions.gmd:onLine.gmd:CI_OnlineResource.gmd:linkage.gmd:URL.$t", objGet linkObj, "URL", "No URL Was Given" 
       serviceType = objGet linkObj, "ServiceType", null
       descriptionString = objGet linkObj, "Description", ""
-      layerId = objGet linkObj, "layerId", null
+      layerId = objGet linkObj, "LayerId", null
       
       if serviceType?
         name = objGet linkObj, "Name", "Service Description"
