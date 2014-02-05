@@ -31,6 +31,32 @@ If you installed CouchDB on Ubuntu through `apt-get install couchdb`, the file w
 4. Test that couchdb-lucene is working
 
 `curl http://localhost:5984/records/_fti/_design/search/full?q=hibbity` and you should get some JSON back.
+
+If you installed CouchDB on a Mac and/or you installed a version of CouchDB greater than v1.1:
+You might just want to `brew install couchdb-lucene`, although this repository includes a working version of couchdb-lucene as a submodule.
+
+1. Make the changes to your `local.ini` file through the WUI `http://127.0.0.1:5984/_utils/config.html`
+2. In addition to the changes made to the CouchDB configuration file above, you'll need to add a proxy handler:
+
+	[httpd_global_handlers]
+	_fti = {couch_httpd_proxy, handle_proxy_req, <<"http://127.0.0.1:5985">>}
+
+3. Restart CouchDB and test that it is working:
+
+`curl http://localhost:5984/_fti/local/records/_design/search/full?q=hibbity`
+
+and you should get this JSON object back:
+
+	{
+	  limit: 25,
+	  etag: "13501bcdbb696740",
+	  fetch_duration: 0,
+	  q: "default:hibbity",
+	  search_duration: 0,
+	  total_rows: 0,
+	  skip: 0,
+	  rows: [ ]
+	}
 		
 *Use NPM to install*
 	
