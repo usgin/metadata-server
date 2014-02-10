@@ -1,4 +1,4 @@
-module.exports =  
+module.exports =
   map: (doc, debug = false) ->
     objGet = (obj, prop, defVal) ->
       return defVal if not obj?
@@ -11,7 +11,7 @@ module.exports =
           return obj if count is props.length
         else
           return defVal
-          
+
     toXmlValidText = (value) ->
       if value? and typeof value is 'string'
         value = value.replace /&(?!(amp;|lt;|gt;|quot;|apos;|nbsp;))/g, '&amp;'
@@ -20,8 +20,8 @@ module.exports =
         value = value.replace /"/g, '&quot;'
         value = value.replace /'/g, '&apos;'
         value = value.replace /&nbsp;/g, ' '
-      return value              
-              
+      return value
+
     iso =
       setProperty: (prop, value) ->
         obj = @
