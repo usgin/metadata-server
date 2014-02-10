@@ -70,7 +70,7 @@ server.get /^\/metadata\/(record|collection)\/$/, ((req, res, next) ->
   routes.listResources
   
 # List records in a specific format  
-server.get /^\/metadata\/record\.(iso\.xml|atom\.xml|geojson)$/, ((req, res, next) -> 
+server.get /^\/metadata\/record\.(iso\.xml|atom\.xml|geojson)$/, ((req, res, next) ->
   req.routeId = 'viewRecords'
   next()), setParams,
   routes.viewRecords
