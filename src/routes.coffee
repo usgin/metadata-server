@@ -40,19 +40,22 @@ module.exports = routes =
         console.log 'GET ALL ' + req.resourceType + 's'
         res.send result    
     da.listDocs db, opts
-  
-        
+
+
+
   # List records in a specific format
   viewRecords: (req, res, next) ->
     db = couch.getDb 'record'
     if req.format.match(/iso\.xml/)? # Handle the special case for iso.xml > web-accessible folder
       opts =
+        design: 'returnPublished'
+        format: 'filtered-iso.xml'
         error: (err) ->
-          next new errors.DatabaseReadError 'Error listing documents'
+          next new errors.DatabaseReadError 'Error running database view'
         success: (result) ->
           console.log 'VIEW ALL records AS ' + req.format
           res.render 'waf.jade', { title: 'Placeholder Title', records: (row.id for row in result.rows when not row.id.match(/^_/)?) }
-      da.listDocs db, opts      
+      da.viewDocs db, opts
     else
       opts =
         design: 'output'
@@ -68,10 +71,9 @@ module.exports = routes =
           if req.format.match(/geojson/)? # Handle the special case for geojson's FeatureCollection wrapper
             result = utils.featureCollection result
           console.log 'VIEW ALL records AS ' + req.format
-          res.send result    
+          res.send result
       da.viewDocs db, opts
-  
-    
+
   # Create a new record or collection  
   newResource: (req, res, next) ->
     db = couch.getDb req.resourceType

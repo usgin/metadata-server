@@ -21,6 +21,7 @@ designDocs =
     require('./design/output')
     require('./design/search')
     require('./design/manage')
+    require('./design/returnPublished')
   ]
   collections: [ require('./design/collectionInfo') ]
   harvests: [ require('./design/input') ]
@@ -84,7 +85,7 @@ module.exports = couch =
     switch resourceType
       when 'record' then return recordsDb
       when 'collection' then return collectionsDb
-      when 'harvest' then return harvestsDb        
+      when 'harvest' then return harvestsDb
               
   setupDbs: ->
     createDb dbName for dbName in [ 'records', 'collections', 'harvests' ]

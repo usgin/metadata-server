@@ -132,14 +132,14 @@ module.exports = da =
     params.key = options.key if options.key?
     params.keys = options.keys if options.keys?
     params.reduce = options.reduce if options.reduce?
-    
+
     db.view options.design, options.format, params, (err, response) ->
       if err?
         options.error err
-      else       
-        response = (cleanDoc row.value for row in response.rows) if options.clean_docs                              
+      else
+        response = (cleanDoc row.value for row in response.rows) if options.clean_docs
         options.success response
-  
+
   # Delete a document
   deleteDoc: (db, options) ->
     options.id ?= ''
