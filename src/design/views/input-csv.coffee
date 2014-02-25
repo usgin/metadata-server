@@ -59,7 +59,7 @@ module.exports =
     # Title
     doc.Title = csv['title'] || 'Missing'
     # Description
-    doc.Description = csv['description'] || 'Missing'
+    doc.Description = csv['description'] || 'No Abstract Was Provided'
     # Publication date
     doc.PublicationDate = csv['publication_date'] || 'Missing'
     # Resource id
@@ -119,7 +119,7 @@ module.exports =
       objLink = 
         URL: 'Missing'
         Name: 'Resource URL'
-        Description: 'Missing'
+        Description: 'No Description Was Provided'
         Distributor: 'Missing' 
       urls = link.split ']'
       if urls.length is 2

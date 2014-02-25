@@ -72,7 +72,7 @@ module.exports =
       link = 
         URL: url
         Name: "Missing"
-        Description: "Missing"
+        Description: "no Description Was Provided"
         Distributor: "Missing"
         
       guess = guessServiceType url

@@ -52,7 +52,7 @@ module.exports =
       
     # Title / Description
     doc.setProperty 'Title', objGet atom, 'title.$t', 'No Title Was Given'
-    doc.setProperty 'Description', objGet atom, 'summary.$t', 'No Description Was Given'
+    doc.setProperty 'Description', objGet atom, 'summary.$t', 'No Abstract Was Given'
     
     # Authors
     atomAuthors = objGet atom, 'author', []
