@@ -22,6 +22,7 @@ designDocs =
     require('./design/search')
     require('./design/manage')
     require('./design/returnPublished')
+    require('./design/helpers')
   ]
   collections: [ require('./design/collectionInfo') ]
   harvests: [ require('./design/input') ]
